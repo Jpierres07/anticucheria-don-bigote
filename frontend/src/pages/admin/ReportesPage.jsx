@@ -4,11 +4,20 @@ import Button from '../../components/common/Button';
 import { Printer, Calendar, User, ShoppingBag, DollarSign, Award, Flame, Filter, BarChart3 } from 'lucide-react';
 
 const ReportesPage = () => {
-  const [periodo, setPeriodo] = useState('diario'); // 'diario' | 'semanal' | 'mensual'
+  const getTodayStr = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const [periodo, setPeriodo] = useState('diario'); // 'diario' | 'dia' | 'semanal' | 'mensual'
+  const [fecha, setFecha] = useState(getTodayStr());
   const [mozo, setMozo] = useState('todos'); // 'todos' | 'edgar.milla' | 'tania.espinoza' | 'norma.shuan'
   const [printSection, setPrintSection] = useState('all'); // 'all' | 'productos' | 'mozos' | 'clientes' | 'pedidos'
 
-  const { data, loading, refetch } = useFetch(`/admin/reportes/ventas?periodo=${periodo}&mozo=${mozo}`);
+  const { data, loading, refetch } = useFetch(`/admin/reportes/ventas?periodo=${periodo}&mozo=${mozo}&fecha=${fecha}`);
 
   const handlePrintSection = (sectionId) => {
     setPrintSection(sectionId);
@@ -32,7 +41,7 @@ const ReportesPage = () => {
             <h2 className="text-2xl font-extrabold text-white flex items-center gap-2">
               <BarChart3 className="text-orange-500" size={26} /> Módulo Ejecutivos de Reportes PDF
             </h2>
-            <p className="text-xs text-zinc-400">Cada sección cuenta con su propio botón de exportación individual a PDF / Impresora</p>
+            <p className="text-xs text-zinc-400">Selecciona el período o un día específico para consultar e imprimir el reporte ejecutivo</p>
           </div>
 
           <Button onClick={() => handlePrintSection('all')} className="text-xs py-2.5 px-4 bg-gradient-to-r from-orange-500 to-amber-600 font-bold">
@@ -40,15 +49,16 @@ const ReportesPage = () => {
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
           {/* Selector de Periodo */}
-          <div className="flex flex-col gap-1.5">
+          <div className="flex flex-col gap-1.5 md:col-span-2">
             <label className="text-xs font-bold text-zinc-300 flex items-center gap-1.5">
               <Calendar size={14} className="text-orange-400" /> Período de Ventas:
             </label>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {[
                 { id: 'diario', label: 'Diario (Hoy)' },
+                { id: 'dia', label: 'Día Específico 📅' },
                 { id: 'semanal', label: 'Semanal (7 Días)' },
                 { id: 'mensual', label: 'Mensual (Este Mes)' }
               ].map((p) => (
@@ -67,21 +77,37 @@ const ReportesPage = () => {
             </div>
           </div>
 
-          {/* Selector de Mozo / Personal */}
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-bold text-zinc-300 flex items-center gap-1.5">
-              <User size={14} className="text-orange-400" /> Filtrar por Mozo / Personal:
-            </label>
-            <select
-              value={mozo}
-              onChange={(e) => setMozo(e.target.value)}
-              className="bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none"
-            >
-              <option value="todos">👥 Todos los Mozos / Personal</option>
-              <option value="edgar.milla">Edgar Milla Pajuelo (Mozo 1)</option>
-              <option value="tania.espinoza">Tania Espinoza Shuan (Mozo 2)</option>
-              <option value="norma.shuan">Sra. Norma Shuan (Admin / Parrilla)</option>
-            </select>
+          {/* Selector de Fecha Específica / Selector de Mozo */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-3">
+            {periodo === 'dia' && (
+              <div className="flex flex-col gap-1.5 animate-fade-in">
+                <label className="text-xs font-bold text-amber-400 flex items-center gap-1.5">
+                  <Calendar size={14} /> Seleccionar Día Exacto:
+                </label>
+                <input
+                  type="date"
+                  value={fecha}
+                  onChange={(e) => setFecha(e.target.value)}
+                  className="bg-zinc-900 border border-amber-500/60 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400 font-bold"
+                />
+              </div>
+            )}
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-bold text-zinc-300 flex items-center gap-1.5">
+                <User size={14} className="text-orange-400" /> Filtrar por Mozo / Personal:
+              </label>
+              <select
+                value={mozo}
+                onChange={(e) => setMozo(e.target.value)}
+                className="bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none"
+              >
+                <option value="todos">👥 Todos los Mozos / Personal</option>
+                <option value="edgar.milla">Edgar Milla Pajuelo (Mozo 1)</option>
+                <option value="tania.espinoza">Tania Espinoza Shuan (Mozo 2)</option>
+                <option value="norma.shuan">Sra. Norma Shuan (Admin / Parrilla)</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
@@ -108,7 +134,7 @@ const ReportesPage = () => {
 
           <div className="text-right">
             <span className="badge badge-warning print:border-black print:text-black uppercase text-xs">
-              Reporte {periodo} {printSection !== 'all' ? `(${printSection.toUpperCase()})` : ''}
+              Reporte {periodo === 'dia' ? `Día ${fecha}` : periodo} {printSection !== 'all' ? `(${printSection.toUpperCase()})` : ''}
             </span>
             <p className="text-xs text-zinc-400 print:text-gray-600 mt-1">
               Fecha de Emisión: <b>{new Date().toLocaleDateString('es-PE')}</b>

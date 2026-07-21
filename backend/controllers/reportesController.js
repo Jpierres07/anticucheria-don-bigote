@@ -35,12 +35,16 @@ const getDashboardMetrics = async (req, res) => {
 
 const getReporteVentas = async (req, res) => {
   try {
-    const { periodo = 'diario', mozo = 'todos' } = req.query;
+    const { periodo = 'diario', mozo = 'todos', fecha } = req.query;
 
     const pool = await getPool();
     if (pool) {
+      const targetFecha = fecha || new Date().toISOString().split('T')[0];
       let dateCondition = "1=1";
-      if (periodo === 'diario') {
+
+      if (fecha || periodo === 'dia') {
+        dateCondition = "CAST(p.fecha_pedido AS DATE) = CAST(@fecha AS DATE)";
+      } else if (periodo === 'diario') {
         dateCondition = "CAST(p.fecha_pedido AS DATE) = CAST(GETDATE() AS DATE)";
       } else if (periodo === 'semanal') {
         dateCondition = "p.fecha_pedido >= DATEADD(day, -7, GETDATE())";
@@ -56,6 +60,7 @@ const getReporteVentas = async (req, res) => {
       // Productos y Combos Vendidos
       const prodsRes = await pool.request()
         .input('mozo', mozo)
+        .input('fecha', targetFecha)
         .query(`
           SELECT 
             COALESCE(prod.nombre, c.nombre, 'Anticuchos Tradicionales') AS producto,
@@ -78,6 +83,7 @@ const getReporteVentas = async (req, res) => {
       // Ventas por Mozo
       const mozosRes = await pool.request()
         .input('mozo', mozo)
+        .input('fecha', targetFecha)
         .query(`
           SELECT 
             COALESCE(per.nombre + ' ' + per.apellido, 'Sra. Norma (Admin)') AS mozo_nombre,
@@ -93,6 +99,7 @@ const getReporteVentas = async (req, res) => {
       // Listado de Transacciones
       const pedidosRes = await pool.request()
         .input('mozo', mozo)
+        .input('fecha', targetFecha)
         .query(`
           SELECT TOP 50
             p.id_pedido,
@@ -112,6 +119,7 @@ const getReporteVentas = async (req, res) => {
       // Ventas por Cliente Frecuente
       const clientesRes = await pool.request()
         .input('mozo', mozo)
+        .input('fecha', targetFecha)
         .query(`
           SELECT 
             COALESCE(cl.nombre + ' ' + cl.apellido, 'Cliente Salón / QR') AS cliente_nombre,
