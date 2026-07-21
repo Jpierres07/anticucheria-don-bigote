@@ -7,6 +7,7 @@ import { User, Lock, KeyRound, Save, X, Phone, CheckCircle } from 'lucide-react'
 
 const PerfilModal = ({ isOpen, onClose }) => {
   const { user } = useContext(AuthContext);
+  const [activeTab, setActiveTab] = useState('datos'); // 'datos' o 'password'
   const [nombre, setNombre] = useState(user?.nombre_completo || '');
   const [telefono, setTelefono] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
@@ -23,7 +24,7 @@ const PerfilModal = ({ isOpen, onClose }) => {
     setMsg('');
     setErrorMsg('');
 
-    if (newPassword && newPassword !== confirmPassword) {
+    if (activeTab === 'password' && newPassword && newPassword !== confirmPassword) {
       setErrorMsg('Las contraseñas nuevas no coinciden.');
       return;
     }
@@ -34,10 +35,10 @@ const PerfilModal = ({ isOpen, onClose }) => {
         nombre,
         telefono,
         current_password: currentPassword,
-        new_password: newPassword
+        new_password: activeTab === 'password' ? newPassword : ''
       });
 
-      setMsg(res.data.message || '✅ Perfil y contraseña actualizados correctamente.');
+      setMsg(res.data.message || '✅ Cambios guardados correctamente.');
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
@@ -54,7 +55,7 @@ const PerfilModal = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-zinc-900 border border-zinc-700 rounded-2xl p-6 max-w-md w-full space-y-5 shadow-2xl text-zinc-100 relative">
+      <div className="bg-zinc-900 border border-zinc-700 rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto space-y-5 shadow-2xl text-zinc-100 relative">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-zinc-400 hover:text-white p-1 rounded-lg hover:bg-zinc-800"
@@ -67,9 +68,31 @@ const PerfilModal = ({ isOpen, onClose }) => {
             <User size={22} />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-white">Mi Perfil y Contraseña</h3>
+            <h3 className="text-lg font-bold text-white">Mi Perfil</h3>
             <p className="text-xs text-zinc-400">{user?.rol || 'Usuario del Sistema'}</p>
           </div>
+        </div>
+
+        {/* Tabs de Selección */}
+        <div className="flex gap-2 bg-zinc-950 p-1 rounded-xl border border-zinc-800">
+          <button
+            type="button"
+            onClick={() => { setActiveTab('datos'); setErrorMsg(''); setMsg(''); }}
+            className={`flex-1 py-2 text-xs font-bold rounded-lg flex items-center justify-center gap-2 transition-all ${
+              activeTab === 'datos' ? 'bg-orange-500 text-white' : 'text-zinc-400 hover:text-white'
+            }`}
+          >
+            <User size={15} /> Datos Personales
+          </button>
+          <button
+            type="button"
+            onClick={() => { setActiveTab('password'); setErrorMsg(''); setMsg(''); }}
+            className={`flex-1 py-2 text-xs font-bold rounded-lg flex items-center justify-center gap-2 transition-all ${
+              activeTab === 'password' ? 'bg-orange-500 text-white' : 'text-zinc-400 hover:text-white'
+            }`}
+          >
+            <KeyRound size={15} /> Cambiar Contraseña
+          </button>
         </div>
 
         {msg && (
@@ -85,63 +108,63 @@ const PerfilModal = ({ isOpen, onClose }) => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-orange-400">Datos Personales</h4>
-            <div>
-              <label className="text-xs text-zinc-400 mb-1 block">Nombre Completo</label>
-              <Input
-                value={nombre}
-                onChange={(e) => setNombre(e.target.value)}
-                placeholder="Nombre del usuario"
-                icon={<User size={16} />}
-              />
+          {activeTab === 'datos' ? (
+            <div className="space-y-3">
+              <div>
+                <label className="text-xs text-zinc-400 mb-1 block">Nombre Completo</label>
+                <Input
+                  value={nombre}
+                  onChange={(e) => setNombre(e.target.value)}
+                  placeholder="Nombre del usuario"
+                  icon={<User size={16} />}
+                />
+              </div>
+              <div>
+                <label className="text-xs text-zinc-400 mb-1 block">Teléfono / Celular (Opcional)</label>
+                <Input
+                  value={telefono}
+                  onChange={(e) => setTelefono(e.target.value)}
+                  placeholder="Ej. 987654321"
+                  icon={<Phone size={16} />}
+                />
+              </div>
             </div>
-            <div>
-              <label className="text-xs text-zinc-400 mb-1 block">Teléfono / Celular (Opcional)</label>
-              <Input
-                value={telefono}
-                onChange={(e) => setTelefono(e.target.value)}
-                placeholder="Ej. 987654321"
-                icon={<Phone size={16} />}
-              />
+          ) : (
+            <div className="space-y-3">
+              <div>
+                <label className="text-xs text-zinc-400 mb-1 block">Contraseña Actual</label>
+                <Input
+                  type="password"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  placeholder="••••••••"
+                  icon={<Lock size={16} />}
+                />
+              </div>
+              <div>
+                <label className="text-xs text-zinc-400 mb-1 block">Nueva Contraseña</label>
+                <Input
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="Nueva contraseña"
+                  icon={<KeyRound size={16} />}
+                />
+              </div>
+              <div>
+                <label className="text-xs text-zinc-400 mb-1 block">Confirmar Nueva Contraseña</label>
+                <Input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Repita nueva contraseña"
+                  icon={<KeyRound size={16} />}
+                />
+              </div>
             </div>
-          </div>
+          )}
 
-          <div className="space-y-3 pt-2 border-t border-zinc-800">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-orange-400">Cambiar Contraseña (Opcional)</h4>
-            <div>
-              <label className="text-xs text-zinc-400 mb-1 block">Contraseña Actual</label>
-              <Input
-                type="password"
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                placeholder="••••••••"
-                icon={<Lock size={16} />}
-              />
-            </div>
-            <div>
-              <label className="text-xs text-zinc-400 mb-1 block">Nueva Contraseña</label>
-              <Input
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="Nueva contraseña"
-                icon={<KeyRound size={16} />}
-              />
-            </div>
-            <div>
-              <label className="text-xs text-zinc-400 mb-1 block">Confirmar Nueva Contraseña</label>
-              <Input
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Repita nueva contraseña"
-                icon={<KeyRound size={16} />}
-              />
-            </div>
-          </div>
-
-          <div className="flex gap-2 pt-3">
+          <div className="flex gap-2 pt-3 border-t border-zinc-800">
             <Button
               type="submit"
               className="flex-1 py-3 bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold flex items-center justify-center gap-2"
