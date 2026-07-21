@@ -99,6 +99,17 @@ const crearPedidoQR = async (req, res) => {
 const getMisPedidos = async (req, res) => {
   try {
     const todos = await Pedido.getAll();
+
+    if (req.user && (req.user.id_cliente || req.user.rol === 'Cliente')) {
+      const idCliente = req.user.id_cliente;
+      const misPedidos = todos.filter(p => 
+        (idCliente && p.id_cliente === idCliente) || 
+        (req.user.username && p.cliente_nombre?.toLowerCase().includes(req.user.username.toLowerCase())) ||
+        (req.user.nombre_completo && p.cliente_nombre?.toLowerCase().includes(req.user.nombre_completo.toLowerCase()))
+      );
+      return res.json(misPedidos);
+    }
+
     res.json(todos);
   } catch (error) {
     res.status(500).json({ message: 'Error al obtener pedidos.' });
