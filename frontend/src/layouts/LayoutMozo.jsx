@@ -31,7 +31,7 @@ const LayoutMozo = () => {
       if (!est || est === 'Listo' || est === 'Servido' || est === 'Listo Servido' || est === 'Entregado') {
         playAlertSound();
         const mesaNum = data?.numero_mesa || data?.id_mesa || '1';
-        setAlertMsg(`🔔 ¡PLATO LISTO EN PARRILLA! 🔥 Bajar a cocina (1er Piso) a recoger el platillo para llevar a la Mesa ${mesaNum}`);
+        setAlertMsg(`🔔 ¡PLATO LISTO, PARA ENTREGAR! 🔥 Mesa ${mesaNum}`);
       }
     }
   });
@@ -45,7 +45,7 @@ const LayoutMozo = () => {
         if (listos && listos.length > 0) {
           const ultimo = listos[0];
           const mesaNum = ultimo.id_mesa || '1';
-          setAlertMsg(`🔔 ¡PLATO LISTO EN PARRILLA! 🔥 Bajar a cocina (1er Piso) a recoger el platillo para llevar a la Mesa ${mesaNum}`);
+          setAlertMsg(`🔔 ¡PLATO LISTO, PARA ENTREGAR! 🔥 Mesa ${mesaNum}`);
         }
       } catch (e) {}
     };
