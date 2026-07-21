@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useFetch } from '../../hooks/useFetch';
 import Button from '../../components/common/Button';
-import { Printer, Calendar, User, ShoppingBag, DollarSign, Award, Flame, Filter, BarChart3 } from 'lucide-react';
+import { Printer, Calendar, User, ShoppingBag, DollarSign, Award, Flame, Filter, BarChart3, TrendingUp, CalendarDays } from 'lucide-react';
 
 const ReportesPage = () => {
   const getTodayStr = () => {
@@ -12,10 +12,10 @@ const ReportesPage = () => {
     return `${year}-${month}-${day}`;
   };
 
-  const [periodo, setPeriodo] = useState('diario'); // 'diario' | 'dia' | 'semanal' | 'mensual'
+  const [periodo, setPeriodo] = useState('diario'); // 'diario' | 'dia' | 'semanal' | 'mensual' | 'todos'
   const [fecha, setFecha] = useState(getTodayStr());
   const [mozo, setMozo] = useState('todos'); // 'todos' | 'edgar.milla' | 'tania.espinoza' | 'norma.shuan'
-  const [printSection, setPrintSection] = useState('all'); // 'all' | 'productos' | 'mozos' | 'clientes' | 'pedidos'
+  const [printSection, setPrintSection] = useState('all'); // 'all' | 'dias' | 'productos' | 'mozos' | 'clientes' | 'pedidos'
 
   const { data, loading, refetch } = useFetch(`/admin/reportes/ventas?periodo=${periodo}&mozo=${mozo}&fecha=${fecha}`);
 
@@ -30,6 +30,7 @@ const ReportesPage = () => {
   const resumen = data?.resumen || { totalVentas: 0, totalPedidos: 0, totalProductos: 0 };
   const productos = data?.productosVendidos || [];
   const mozos = data?.ventasPorMozo || [];
+  const ventasPorDia = data?.ventasPorDia || [];
   const pedidos = data?.pedidos || [];
 
   const personalList = data?.personalList && data.personalList.length > 0 
@@ -47,9 +48,9 @@ const ReportesPage = () => {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <h2 className="text-2xl font-extrabold text-white flex items-center gap-2">
-              <BarChart3 className="text-orange-500" size={26} /> Módulo de Reportes
+              <BarChart3 className="text-orange-500" size={26} /> Módulo de Reportes Ejecutivos
             </h2>
-            <p className="text-xs text-zinc-400">Selecciona el período o un día específico para consultar e imprimir el reporte ejecutivo</p>
+            <p className="text-xs text-zinc-400">Consulta y exporta los datos de ventas diarias, histórico completo, mozos y productos</p>
           </div>
 
           <Button onClick={() => handlePrintSection('all')} className="text-xs py-2.5 px-4 bg-gradient-to-r from-orange-500 to-amber-600 font-bold">
@@ -63,12 +64,13 @@ const ReportesPage = () => {
             <label className="text-xs font-bold text-zinc-300 flex items-center gap-1.5">
               <Calendar size={14} className="text-orange-400" /> Período de Ventas:
             </label>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
               {[
                 { id: 'diario', label: 'Diario (Hoy)' },
                 { id: 'dia', label: 'Día Específico 📅' },
                 { id: 'semanal', label: 'Semanal (7 Días)' },
-                { id: 'mensual', label: 'Mensual (Este Mes)' }
+                { id: 'mensual', label: 'Mensual (Este Mes)' },
+                { id: 'todos', label: 'Todos los Días 🗓️' }
               ].map((p) => (
                 <button
                   key={p.id}
@@ -144,29 +146,26 @@ const ReportesPage = () => {
 
           <div className="text-right">
             <span className="badge badge-warning print:border-black print:text-black uppercase text-xs">
-              Reporte {periodo === 'dia' ? `Día ${fecha}` : periodo} {printSection !== 'all' ? `(${printSection.toUpperCase()})` : ''}
+              Reporte {periodo === 'todos' ? 'Histórico (Todos los Días)' : periodo === 'dia' ? `Día ${fecha}` : periodo} {printSection !== 'all' ? `(${printSection.toUpperCase()})` : ''}
             </span>
             <p className="text-xs text-zinc-400 print:text-gray-600 mt-1">
               Fecha de Emisión: <b>{new Date().toLocaleDateString('es-PE')}</b>
             </p>
-            <p className="text-[11px] text-zinc-500 print:text-gray-500">
-              Personal Seleccionado: <b className="text-orange-400 print:text-black">{mozo === 'todos' ? 'Todos los Mozos' : mozo}</b>
-            </p>
           </div>
         </div>
 
-        {/* Tarjetas KPI Resumen Ejecutivo */}
-        <div className="grid grid-cols-3 gap-4">
+        {/* METRICAS PRINCIPALES DEL REPORTE */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-zinc-900/80 print:bg-gray-100 p-4 rounded-xl border border-zinc-800 print:border-gray-300">
-            <span className="text-xs font-bold text-zinc-400 print:text-gray-600 block">Total Recaudado</span>
+            <span className="text-xs font-bold text-zinc-400 print:text-gray-600 block">Total Ventas Recaudadas</span>
             <span className="text-2xl font-black text-emerald-400 print:text-black mt-1 block">
               S/ {Number(resumen.totalVentas || 0).toFixed(2)}
             </span>
           </div>
           <div className="bg-zinc-900/80 print:bg-gray-100 p-4 rounded-xl border border-zinc-800 print:border-gray-300">
-            <span className="text-xs font-bold text-zinc-400 print:text-gray-600 block">Pedidos Atendidos</span>
-            <span className="text-2xl font-black text-white print:text-black mt-1 block">
-              {resumen.totalPedidos || 0} Comandas
+            <span className="text-xs font-bold text-zinc-400 print:text-gray-600 block">Total Comandas Registradas</span>
+            <span className="text-2xl font-black text-amber-400 print:text-black mt-1 block">
+              {resumen.totalPedidos || 0} Pedidos
             </span>
           </div>
           <div className="bg-zinc-900/80 print:bg-gray-100 p-4 rounded-xl border border-zinc-800 print:border-gray-300">
@@ -186,7 +185,7 @@ const ReportesPage = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Gráfico de Barras 1: Top Productos Vendidos */}
             <div className="space-y-3 glass-panel p-4 print:bg-transparent print:border-none print:shadow-none">
-              <span className="text-xs font-bold text-orange-400 print:text-black block flex items-center gap-1.5">
+              <span className="text-xs font-bold text-orange-400 print:text-black flex items-center gap-1.5 block">
                 📊 Gráfico de Barras: Productos más Vendidos
               </span>
               {productos.slice(0, 4).map((p, idx) => {
@@ -211,7 +210,7 @@ const ReportesPage = () => {
 
             {/* Gráfico de Barras 2: Ventas por Mozo */}
             <div className="space-y-3 glass-panel p-4 print:bg-transparent print:border-none print:shadow-none">
-              <span className="text-xs font-bold text-emerald-400 print:text-black block flex items-center gap-1.5">
+              <span className="text-xs font-bold text-emerald-400 print:text-black flex items-center gap-1.5 block">
                 📊 Gráfico de Barras: Rendimiento por Personal
               </span>
               {mozos.map((m, idx) => {
@@ -236,18 +235,14 @@ const ReportesPage = () => {
 
             {/* Gráfico 3: Gráfico Circular (Pie Chart) - Métodos de Pago */}
             <div className="space-y-3 glass-panel p-4 print:bg-transparent print:border-none print:shadow-none flex flex-col justify-between">
-              <span className="text-xs font-bold text-amber-400 print:text-black block flex items-center gap-1.5">
+              <span className="text-xs font-bold text-amber-400 print:text-black flex items-center gap-1.5 block">
                 ⭕ Gráfico Circular: Canales de Cobro
               </span>
               <div className="flex items-center justify-around gap-2 my-auto py-2">
-                {/* SVG Donut / Pie Chart */}
                 <div className="relative w-24 h-24 flex items-center justify-center flex-shrink-0">
                   <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                    {/* Circle 1 - Efectivo 45% (#10b981) */}
                     <circle cx="50" cy="50" r="38" fill="transparent" stroke="#10b981" strokeWidth="18" strokeDasharray="107.4 238.7" strokeDashoffset="0" />
-                    {/* Circle 2 - Yape/Plin 40% (#8b5cf6) */}
                     <circle cx="50" cy="50" r="38" fill="transparent" stroke="#8b5cf6" strokeWidth="18" strokeDasharray="95.5 238.7" strokeDashoffset="-107.4" />
-                    {/* Circle 3 - Tarjeta 15% (#f59e0b) */}
                     <circle cx="50" cy="50" r="38" fill="transparent" stroke="#f59e0b" strokeWidth="18" strokeDasharray="35.8 238.7" strokeDashoffset="-202.9" />
                   </svg>
                   <div className="absolute text-center">
@@ -255,7 +250,6 @@ const ReportesPage = () => {
                   </div>
                 </div>
 
-                {/* Leyendas */}
                 <div className="space-y-1.5 text-[11px] font-semibold">
                   <div className="flex items-center gap-1.5">
                     <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block" />
@@ -275,9 +269,74 @@ const ReportesPage = () => {
           </div>
         </div>
 
+        {/* NUEVA SECCIÓN: REPORTE DE VENTAS DE TODOS LOS DÍAS (HISTÓRICO DIARIO) */}
+        <div className={`space-y-3 pt-2 ${printSection !== 'all' && printSection !== 'dias' ? 'print:hidden' : ''}`}>
+          <div className="flex justify-between items-center">
+            <h3 className="text-base font-bold text-white print:text-black flex items-center gap-2">
+              <CalendarDays size={18} className="text-orange-400 print:text-black" /> 🗓️ Reporte Histórico: Resumen de Ventas por Día
+            </h3>
+            <button
+              onClick={() => handlePrintSection('dias')}
+              className="text-[11px] font-bold px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-orange-500 text-zinc-300 hover:text-white transition-all flex items-center gap-1.5 print:hidden border border-zinc-700"
+            >
+              <Printer size={13} /> Imprimir / PDF Ventas por Día
+            </button>
+          </div>
+          <table className="w-full text-left text-xs">
+            <thead className="bg-zinc-900/90 print:bg-gray-200 text-zinc-400 print:text-black font-semibold border-b border-zinc-800 print:border-gray-400 uppercase">
+              <tr>
+                <th className="p-3">Fecha / Día</th>
+                <th className="p-3 text-center">N° Pedidos</th>
+                <th className="p-3 text-right">Total Recaudado</th>
+                <th className="p-3 text-right">Promedio por Pedido</th>
+                <th className="p-3 text-center print:hidden">Acción</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-800 print:divide-gray-300 text-zinc-200 print:text-black">
+              {ventasPorDia.length > 0 ? (
+                ventasPorDia.map((d, idx) => {
+                  const totalV = Number(d.total_ventas || 0);
+                  const numPed = Number(d.cantidad_pedidos || 1);
+                  const promedio = totalV / numPed;
+                  return (
+                    <tr key={idx} className="hover:bg-zinc-900/40">
+                      <td className="p-3 font-bold text-white print:text-black flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-orange-500 print:hidden inline-block" />
+                        {d.fecha}
+                      </td>
+                      <td className="p-3 text-center font-bold text-amber-400 print:text-black">{d.cantidad_pedidos} comandas</td>
+                      <td className="p-3 text-right font-black text-emerald-400 print:text-black">
+                        S/ {totalV.toFixed(2)}
+                      </td>
+                      <td className="p-3 text-right font-medium text-zinc-400 print:text-black">
+                        S/ {promedio.toFixed(2)}
+                      </td>
+                      <td className="p-3 text-center print:hidden">
+                        <button
+                          onClick={() => {
+                            setPeriodo('dia');
+                            setFecha(d.fecha);
+                          }}
+                          className="px-2.5 py-1 rounded bg-zinc-800 hover:bg-orange-500 text-[10px] font-bold text-zinc-300 hover:text-white transition-all border border-zinc-700"
+                        >
+                          Ver Día 🔍
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan="5" className="p-4 text-center text-zinc-500">No hay datos registrados en el historial diario.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
         {/* Sección 1: Platillos, Combos y Bebidas Vendidas */}
-        <div className={`space-y-3 ${printSection !== 'all' && printSection !== 'productos' ? 'print:hidden' : ''}`}>
-          <div className="flex justify-between items-center pt-2">
+        <div className={`space-y-3 pt-4 ${printSection !== 'all' && printSection !== 'productos' ? 'print:hidden' : ''}`}>
+          <div className="flex justify-between items-center">
             <h3 className="text-base font-bold text-white print:text-black flex items-center gap-2">
               <Award size={18} className="text-amber-400 print:text-black" /> Desglose Detallado: Platillos, Combos y Bebidas Vendidas
             </h3>

@@ -125,7 +125,7 @@ const mockDatabase = {
       id_pedido: 102,
       id_cliente: 1,
       cliente_nombre: 'Mario Fernando',
-      id_personal: 2,
+      id_personal: 3,
       id_mesa: 4,
       numero_mesa: 4,
       fecha_pedido: new Date().toISOString(),
@@ -134,6 +134,86 @@ const mockDatabase = {
       tipo_servicio: 'Local',
       detalles: [
         { id_combo: 1, nombre: 'Combo Pollo a la Parrilla + Rachi', cantidad: 1, precio_unitario: 30.00 }
+      ]
+    },
+    {
+      id_pedido: 103,
+      id_cliente: 2,
+      cliente_nombre: 'Carlos Mendoza',
+      id_personal: 2,
+      id_mesa: 1,
+      numero_mesa: 1,
+      fecha_pedido: '2026-07-20T20:15:00.000Z',
+      total: 58.00,
+      estado_pedido: 'Entregado',
+      tipo_servicio: 'Local',
+      detalles: [
+        { id_producto: 1, nombre: 'Pollo a la Parrilla', cantidad: 2, precio_unitario: 16.00 },
+        { id_producto: 5, nombre: 'Anticuchos de Corazón', cantidad: 1, precio_unitario: 12.00 },
+        { id_producto: 13, nombre: 'Chicha Morada 1 Litro', cantidad: 1, precio_unitario: 10.00 }
+      ]
+    },
+    {
+      id_pedido: 104,
+      id_cliente: 3,
+      cliente_nombre: 'Ana María Torres',
+      id_personal: 3,
+      id_mesa: 3,
+      numero_mesa: 3,
+      fecha_pedido: '2026-07-20T21:40:00.000Z',
+      total: 32.00,
+      estado_pedido: 'Entregado',
+      tipo_servicio: 'Local',
+      detalles: [
+        { id_producto: 2, nombre: 'Rachi Rachi', cantidad: 2, precio_unitario: 16.00 }
+      ]
+    },
+    {
+      id_pedido: 105,
+      id_cliente: 4,
+      cliente_nombre: 'Roberto Salazar',
+      id_personal: 2,
+      id_mesa: 5,
+      numero_mesa: 5,
+      fecha_pedido: '2026-07-19T19:30:00.000Z',
+      total: 72.00,
+      estado_pedido: 'Entregado',
+      tipo_servicio: 'Local',
+      detalles: [
+        { id_combo: 5, nombre: 'Trío Parrillero Don Bigote', cantidad: 2, precio_unitario: 23.00 },
+        { id_producto: 3, nombre: 'Mollejitas', cantidad: 1, precio_unitario: 16.00 },
+        { id_producto: 12, nombre: 'Gaseosa 1 Litro', cantidad: 1, precio_unitario: 10.00 }
+      ]
+    },
+    {
+      id_pedido: 106,
+      id_cliente: 5,
+      cliente_nombre: 'Lucía Benítez',
+      id_personal: 3,
+      id_mesa: 2,
+      numero_mesa: 2,
+      fecha_pedido: '2026-07-18T20:00:00.000Z',
+      total: 48.00,
+      estado_pedido: 'Entregado',
+      tipo_servicio: 'Local',
+      detalles: [
+        { id_producto: 1, nombre: 'Pollo a la Parrilla', cantidad: 3, precio_unitario: 16.00 }
+      ]
+    },
+    {
+      id_pedido: 107,
+      id_cliente: 6,
+      cliente_nombre: 'Pedro Ramírez',
+      id_personal: 2,
+      id_mesa: 6,
+      numero_mesa: 6,
+      fecha_pedido: '2026-07-17T21:10:00.000Z',
+      total: 64.00,
+      estado_pedido: 'Entregado',
+      tipo_servicio: 'Local',
+      detalles: [
+        { id_combo: 1, nombre: 'Pollo a la Parrilla + Rachi', cantidad: 2, precio_unitario: 30.00 },
+        { id_producto: 10, nombre: 'Gaseosa personal', cantidad: 1, precio_unitario: 4.00 }
       ]
     }
   ],

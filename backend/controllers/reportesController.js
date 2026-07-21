@@ -42,7 +42,9 @@ const getReporteVentas = async (req, res) => {
       const targetFecha = fecha || new Date().toISOString().split('T')[0];
       let dateCondition = "1=1";
 
-      if (fecha || periodo === 'dia') {
+      if (periodo === 'todos' || periodo === 'historico') {
+        dateCondition = "1=1";
+      } else if (fecha || periodo === 'dia') {
         dateCondition = "CAST(p.fecha_pedido AS DATE) = CAST(@fecha AS DATE)";
       } else if (periodo === 'diario') {
         dateCondition = "CAST(p.fecha_pedido AS DATE) = CAST(GETDATE() AS DATE)";
@@ -96,12 +98,29 @@ const getReporteVentas = async (req, res) => {
           GROUP BY COALESCE(per.nombre + ' ' + per.apellido, 'Sra. Norma (Admin)')
         `);
 
+      // Ventas por Día (Reporte Histórico Diario)
+      const diasRes = await pool.request()
+        .input('mozo', mozo)
+        .input('fecha', targetFecha)
+        .query(`
+          SELECT 
+            CONVERT(VARCHAR(10), p.fecha_pedido, 120) AS fecha,
+            COUNT(DISTINCT p.id_pedido) AS cantidad_pedidos,
+            SUM(p.total) AS total_ventas
+          FROM Pedido p
+          LEFT JOIN Personal per ON p.id_personal = per.id_personal
+          LEFT JOIN Usuario u ON per.id_personal = u.id_personal
+          WHERE ${dateCondition} ${mozoCondition}
+          GROUP BY CONVERT(VARCHAR(10), p.fecha_pedido, 120)
+          ORDER BY fecha DESC
+        `);
+
       // Listado de Transacciones
       const pedidosRes = await pool.request()
         .input('mozo', mozo)
         .input('fecha', targetFecha)
         .query(`
-          SELECT TOP 50
+          SELECT TOP 100
             p.id_pedido,
             p.fecha_pedido,
             p.id_mesa,
@@ -149,6 +168,7 @@ const getReporteVentas = async (req, res) => {
       const mozos = mozosRes.recordset || [];
       const clientes = clientesRes.recordset || [];
       const peds = pedidosRes.recordset || [];
+      const ventasPorDia = diasRes.recordset || [];
       const personalList = allPersonalRes.recordset || [];
 
       return res.json({
@@ -162,6 +182,7 @@ const getReporteVentas = async (req, res) => {
         productosVendidos: prods,
         ventasPorMozo: mozos,
         ventasPorCliente: clientes,
+        ventasPorDia,
         pedidos: peds,
         personalList
       });
@@ -174,7 +195,35 @@ const getReporteVentas = async (req, res) => {
       { username: 'norma.shuan', nombre_completo: 'Sra. Norma Shuan', cargo: 'Administradora' }
     ];
 
-    // Fallback Mock Data
+    let filteredPeds = [...mockDB.pedidos];
+
+    if (mozo !== 'todos') {
+      filteredPeds = filteredPeds.filter(p => {
+        if (mozo === 'edgar.milla' && p.id_personal === 2) return true;
+        if (mozo === 'tania.espinoza' && p.id_personal === 3) return true;
+        return false;
+      });
+    }
+
+    if (periodo === 'dia' && fecha) {
+      filteredPeds = filteredPeds.filter(p => p.fecha_pedido && p.fecha_pedido.startsWith(fecha));
+    }
+
+    // Agrupar ventas por día
+    const ventasPorDiaMap = {};
+    filteredPeds.forEach(p => {
+      const dia = p.fecha_pedido ? p.fecha_pedido.split('T')[0] : '2026-07-21';
+      if (!ventasPorDiaMap[dia]) {
+        ventasPorDiaMap[dia] = { fecha: dia, cantidad_pedidos: 0, total_ventas: 0, productos_vendidos: 0 };
+      }
+      ventasPorDiaMap[dia].cantidad_pedidos += 1;
+      ventasPorDiaMap[dia].total_ventas += (p.total || 0);
+      const cantProds = p.detalles ? p.detalles.reduce((sum, d) => sum + (d.cantidad || 1), 0) : 2;
+      ventasPorDiaMap[dia].productos_vendidos += cantProds;
+    });
+
+    const ventasPorDia = Object.values(ventasPorDiaMap).sort((a, b) => b.fecha.localeCompare(a.fecha));
+
     const mockProds = [
       { producto: 'Anticuchos de Corazón', categoria: 'Platillos', cantidad_vendida: 38, precio_unitario: 12.00, total_generado: 456.00 },
       { producto: 'Rachi Rachi', categoria: 'Platillos', cantidad_vendida: 24, precio_unitario: 16.00, total_generado: 384.00 },
@@ -189,27 +238,22 @@ const getReporteVentas = async (req, res) => {
       { mozo_nombre: 'Sra. Norma Shuan (Admin)', cantidad_pedidos: 6, total_vendido: 380.00 }
     ];
 
-    const mockPeds = [
-      { id_pedido: 101, fecha_pedido: new Date().toISOString(), id_mesa: 1, total: 44.00, tipo_servicio: 'Local', estado_pedido: 'Entregado', mozo_nombre: 'Edgar Milla Pajuelo' },
-      { id_pedido: 102, fecha_pedido: new Date().toISOString(), id_mesa: 4, total: 30.00, tipo_servicio: 'Local', estado_pedido: 'Entregado', mozo_nombre: 'Tania Espinoza Shuan' }
-    ];
-
-    const filteredProds = mozo === 'edgar.milla' ? mockProds.slice(0, 3) : mozo === 'tania.espinoza' ? mockProds.slice(1, 4) : mockProds;
-
     res.json({
       periodo,
       mozo,
       resumen: {
-        totalVentas: filteredProds.reduce((a, b) => a + b.total_generado, 0),
-        totalPedidos: mockPeds.length,
-        totalProductos: filteredProds.reduce((a, b) => a + b.cantidad_vendida, 0)
+        totalVentas: filteredPeds.reduce((a, b) => a + Number(b.total || 0), 0),
+        totalPedidos: filteredPeds.length,
+        totalProductos: filteredPeds.reduce((a, b) => a + (b.detalles ? b.detalles.reduce((sum, d) => sum + (d.cantidad || 1), 0) : 2), 0)
       },
-      productosVendidos: filteredProds,
+      productosVendidos: mockProds,
       ventasPorMozo: mockMozos,
-      pedidos: mockPeds,
+      ventasPorDia,
+      pedidos: filteredPeds,
       personalList: mockPersonalList
     });
   } catch (error) {
+    console.error('Error en reportesController:', error);
     res.status(500).json({ message: 'Error al generar reporte de ventas.' });
   }
 };
