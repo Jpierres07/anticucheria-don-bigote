@@ -45,7 +45,7 @@ const login = async (req, res) => {
     }
 
     if (!isValid) {
-      return res.status(401).json({ message: 'Contraseña incorrecta para este usuario.' });
+      return res.status(401).json({ message: 'Credenciales inválidas.' });
     }
 
     // Verificar si la cuenta está pendiente de aprobación (para Trabajadores)

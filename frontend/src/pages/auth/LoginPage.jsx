@@ -41,7 +41,12 @@ const LoginPage = () => {
         navigate('/cliente/carta');
       }
     } else {
-      setErrorMsg(result.message);
+      const msg = result.message || '';
+      if (msg.toLowerCase().includes('credenciales') || msg.toLowerCase().includes('incorrecta') || msg.toLowerCase().includes('encontrado')) {
+        setErrorMsg('Credenciales inválidas.');
+      } else {
+        setErrorMsg(msg);
+      }
     }
   };
 
