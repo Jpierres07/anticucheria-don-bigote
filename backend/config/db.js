@@ -25,10 +25,13 @@ let useMock = false;
 // Mock store in memory if database is not reachable locally
 const mockDatabase = {
   usuarios: [
-    { id_usuario: 1, username: 'norma.shuan', password_hash: '123456', id_personal: 1, id_cliente: null, estado: 1, rol: 'Administradora, Parrillera y Ventas', nombre: 'Norma Shuan' },
-    { id_usuario: 2, username: 'edgar.milla', password_hash: '123456', id_personal: 2, id_cliente: null, estado: 1, rol: 'Atención al Cliente y Limpieza', nombre: 'Edgar Milla' },
-    { id_usuario: 3, username: 'tania.espinoza', password_hash: '123456', id_personal: 3, id_cliente: null, estado: 1, rol: 'Atención al Cliente y Limpieza', nombre: 'Tania Espinoza' },
-    { id_usuario: 4, username: 'cliente.demo', password_hash: '123456', id_personal: null, id_cliente: 1, estado: 1, rol: 'Cliente', nombre: 'Jean-Pierre Shuan' }
+    { id_usuario: 1, username: 'norma.shuan', password_hash: '123456', id_personal: 1, id_cliente: null, estado: 1, rol: 'Administradora, Parrillera y Ventas', nombre_completo: 'Norma Shuan' },
+    { id_usuario: 2, username: 'edgar.milla', password_hash: '123456', id_personal: 2, id_cliente: null, estado: 1, rol: 'Atención al Cliente y Limpieza', nombre_completo: 'Edgar Milla' },
+    { id_usuario: 3, username: 'tania.espinoza', password_hash: '123456', id_personal: 3, id_cliente: null, estado: 1, rol: 'Atención al Cliente y Limpieza', nombre_completo: 'Tania Espinoza' },
+    { id_usuario: 4, username: 'cliente.demo', password_hash: '123456', id_personal: null, id_cliente: 1, estado: 1, rol: 'Cliente', nombre_completo: 'Jean-Pierre Shuan' },
+    { id_usuario: 5, username: 'jean.shuan', password_hash: '123456', id_personal: null, id_cliente: 1, estado: 1, rol: 'Cliente', nombre_completo: 'Jean-Pierre Shuan' },
+    { id_usuario: 6, username: 'mario.fer', password_hash: '123456', id_personal: null, id_cliente: 27, estado: 1, rol: 'Cliente', nombre_completo: 'Mario Fernandez' },
+    { id_usuario: 7, username: 'cliente.test509', password_hash: '123456', id_personal: null, id_cliente: 26, estado: 1, rol: 'Cliente', nombre_completo: 'Maria Lopez' }
   ],
   productos: [
     { id_producto: 1, nombre: 'Pollo a la Parrilla', precio: 16.00, id_categoria: 1, categoria: 'Platillos', imagen_url: 'https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?auto=format&fit=crop&w=800&q=80' },
