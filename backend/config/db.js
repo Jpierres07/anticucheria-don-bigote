@@ -56,11 +56,11 @@ const mockDatabase = {
     { id_combo: 5, nombre: 'Trío Parrillero Don Bigote', descripcion: 'Anticuchos de Pollo + Corazón + Bofe', precio_combo: 23.00, imagen_url: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80' }
   ],
   mesas: [
-    { id_mesa: 1, numero_mesa: 1, capacidad: 4, piso: 1, estado_mesa: 'Ocupada' },
+    { id_mesa: 1, numero_mesa: 1, capacidad: 4, piso: 1, estado_mesa: 'Libre' },
     { id_mesa: 2, numero_mesa: 2, capacidad: 4, piso: 1, estado_mesa: 'Libre' },
     { id_mesa: 3, numero_mesa: 3, capacidad: 4, piso: 2, estado_mesa: 'Libre' },
-    { id_mesa: 4, numero_mesa: 4, capacidad: 4, piso: 2, estado_mesa: 'Ocupada' },
-    { id_mesa: 5, numero_mesa: 5, capacidad: 6, piso: 2, estado_mesa: 'Reservada' },
+    { id_mesa: 4, numero_mesa: 4, capacidad: 4, piso: 2, estado_mesa: 'Libre' },
+    { id_mesa: 5, numero_mesa: 5, capacidad: 6, piso: 2, estado_mesa: 'Libre' },
     { id_mesa: 6, numero_mesa: 6, capacidad: 4, piso: 2, estado_mesa: 'Libre' },
     { id_mesa: 7, numero_mesa: 7, capacidad: 2, piso: 2, estado_mesa: 'Libre' }
   ],
