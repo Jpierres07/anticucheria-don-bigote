@@ -26,8 +26,14 @@ const Congeladora = () => {
     { id_insumo: 7, nombre_insumo: 'Chorizo Parrillero' }
   ];
 
+  const grilledKeywords = ['corazón', 'corazon', 'rachi', 'pancita', 'pechuga', 'bofe', 'patita', 'alita', 'chorizo', 'anticucho'];
+
   const insumosList = (inventarioData && Array.isArray(inventarioData) && inventarioData.length > 0)
-    ? inventarioData.filter(i => !i.nombre_insumo?.toLowerCase().includes('gas'))
+    ? inventarioData.filter(i => {
+        const nom = (i.nombre_insumo || '').toLowerCase();
+        if (nom.includes('gas') || nom.includes('aceite') || nom.includes('papa') || nom.includes('choclo') || nom.includes('gaseosa') || nom.includes('bebida')) return false;
+        return grilledKeywords.some(kw => nom.includes(kw));
+      })
     : defaultGrilledInsumos;
 
   const handleSaveCierre = async (e) => {
