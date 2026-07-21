@@ -126,6 +126,18 @@ const getMisPedidos = async (req, res) => {
 const crearReserva = async (req, res) => {
   try {
     const { fecha_reserva, hora_reserva, cantidad_personas, tipo_evento } = req.body;
+
+    const now = new Date();
+    const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
+    if (fecha_reserva && fecha_reserva < todayStr) {
+      return res.status(400).json({ message: 'La fecha de reserva no puede ser anterior a la fecha actual.' });
+    }
+
+    if (hora_reserva && (hora_reserva < '18:00' || hora_reserva > '23:00')) {
+      return res.status(400).json({ message: 'El horario de atención para reservas es desde las 6:00 PM (18:00) hasta las 11:00 PM (23:00).' });
+    }
+
     const nuevaReserva = {
       id_reserva: mockDB.reservas.length + 1,
       id_cliente: req.user ? req.user.id_cliente || 1 : 1,
