@@ -72,6 +72,8 @@ const cobrarMesa = async (req, res) => {
   try {
     const { id_pedido, id_mesa, id_metodo_pago, monto_pagado } = req.body;
     
+    const { isMock, mockDB } = require('../config/db');
+
     const pool = await require('../config/db').getPool();
     if (pool) {
       await pool.request()
@@ -80,6 +82,14 @@ const cobrarMesa = async (req, res) => {
         .query("UPDATE Pedido SET id_metodo_pago = @metodo, estado_pedido = 'Entregado' WHERE id_pedido = @id");
     } else {
       await Pedido.updateEstado(id_pedido, 'Entregado');
+    }
+
+    if (isMock()) {
+      const p = mockDB.pedidos.find(x => x.id_pedido === parseInt(id_pedido, 10));
+      if (p) {
+        p.id_metodo_pago = id_metodo_pago || 1;
+        p.estado_pedido = 'Entregado';
+      }
     }
 
     if (id_mesa) {

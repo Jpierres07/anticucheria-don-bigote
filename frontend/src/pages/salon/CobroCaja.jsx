@@ -21,15 +21,17 @@ const CobroCaja = () => {
   const handleCobrar = async () => {
     if (!selectedPedido) return;
     setProcessing(true);
+    const targetId = selectedPedido.id_pedido;
+    selectedPedido.id_metodo_pago = metodoPago === 'Efectivo' ? 1 : metodoPago === 'Yape' ? 2 : 3;
     try {
       await api.post('/salon/cobrar', {
-        id_pedido: selectedPedido.id_pedido,
+        id_pedido: targetId,
         id_mesa: selectedPedido.id_mesa,
-        id_metodo_pago: metodoPago === 'Efectivo' ? 1 : metodoPago === 'Yape' ? 2 : 3
+        id_metodo_pago: selectedPedido.id_metodo_pago
       });
 
       setTicketData({
-        id_pedido: selectedPedido.id_pedido,
+        id_pedido: targetId,
         cliente_nombre: selectedPedido.cliente_nombre || 'Cliente Salón',
         numero_mesa: selectedPedido.numero_mesa || selectedPedido.id_mesa || '1',
         total: selectedPedido.total,
@@ -38,11 +40,11 @@ const CobroCaja = () => {
         fecha: new Date().toLocaleString()
       });
 
-      setStatusMsg(`✅ Pago registrado para Pedido #${selectedPedido.id_pedido} vía ${metodoPago}. Mesa liberada.`);
+      setStatusMsg(`✅ Pago registrado para Pedido #${targetId} vía ${metodoPago}. Mesa liberada.`);
       setSelectedPedido(null);
       refetch();
     } catch (e) {
-      setStatusMsg(`Cobro procesado correctamente para Pedido #${selectedPedido.id_pedido}.`);
+      setStatusMsg(`Cobro procesado correctamente para Pedido #${targetId}.`);
       setSelectedPedido(null);
       refetch();
     } finally {
