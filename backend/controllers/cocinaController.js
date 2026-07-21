@@ -19,16 +19,16 @@ const actualizarEstadoParrilla = async (req, res) => {
     const actualizado = await Pedido.updateEstado(id_pedido, estado_pedido);
 
     if (req.io) {
-      req.io.emit('cambio_estado_parrilla', { id_pedido, estado_pedido });
-      if (estado_pedido === 'Listo' || estado_pedido === 'Listo Servido' || estado_pedido === 'Entregado') {
-        const ped = await Pedido.getById(id_pedido);
-        req.io.emit('comanda_lista_mozo', { 
-          id_pedido, 
-          estado_pedido, 
-          id_mesa: ped?.id_mesa || 1,
-          numero_mesa: ped?.numero_mesa || ped?.id_mesa || 1
-        });
-      }
+      const ped = await Pedido.getById(id_pedido);
+      const payload = {
+        id_pedido: parseInt(id_pedido, 10),
+        estado_pedido,
+        id_mesa: ped?.id_mesa || 1,
+        numero_mesa: ped?.numero_mesa || ped?.id_mesa || 1
+      };
+
+      req.io.emit('cambio_estado_parrilla', payload);
+      req.io.emit('comanda_lista_mozo', payload);
     }
 
     res.json({ message: `Estado de comanda actualizado a ${estado_pedido}`, pedido: actualizado });

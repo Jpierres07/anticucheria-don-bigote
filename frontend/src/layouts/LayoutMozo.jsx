@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { LayoutGrid, ClipboardList, Flame, BellRing } from 'lucide-react';
 import { useSocket } from '../hooks/useSocket';
 import Notification from '../components/common/Notification';
+import api from '../services/api';
 
 const LayoutMozo = () => {
   const location = useLocation();
@@ -16,7 +17,7 @@ const LayoutMozo = () => {
       const gain = ctx.createGain();
       osc.type = 'sine';
       osc.frequency.setValueAtTime(880, ctx.currentTime);
-      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.setValueAtTime(0.4, ctx.currentTime);
       osc.connect(gain);
       gain.connect(ctx.destination);
       osc.start();
@@ -26,11 +27,31 @@ const LayoutMozo = () => {
 
   useSocket('salon', (eventType, data) => {
     if (eventType === 'comanda_lista_mozo' || eventType === 'cambio_estado_parrilla' || eventType === 'cambio_estado') {
-      playAlertSound();
-      const mesaNum = data?.numero_mesa || data?.id_mesa || '1';
-      setAlertMsg(`🔔 ¡PLATO LISTO EN PARRILLA! 🔥 Bajar a cocina (1er Piso) a recoger el platillo para llevar a la Mesa ${mesaNum}`);
+      const est = data?.estado_pedido;
+      if (!est || est === 'Listo' || est === 'Servido' || est === 'Listo Servido' || est === 'Entregado') {
+        playAlertSound();
+        const mesaNum = data?.numero_mesa || data?.id_mesa || '1';
+        setAlertMsg(`🔔 ¡PLATO LISTO EN PARRILLA! 🔥 Bajar a cocina (1er Piso) a recoger el platillo para llevar a la Mesa ${mesaNum}`);
+      }
     }
   });
+
+  // Polling de respaldo automático cada 3 segundos
+  useEffect(() => {
+    const checkReadyOrders = async () => {
+      try {
+        const res = await api.get('/cocina/pedidos');
+        const listos = res.data?.filter(p => p.estado_pedido === 'Listo' || p.estado_pedido === 'Servido' || p.estado_pedido === 'Listo Servido');
+        if (listos && listos.length > 0) {
+          const ultimo = listos[0];
+          const mesaNum = ultimo.id_mesa || '1';
+          setAlertMsg(`🔔 ¡PLATO LISTO EN PARRILLA! 🔥 Bajar a cocina (1er Piso) a recoger el platillo para llevar a la Mesa ${mesaNum}`);
+        }
+      } catch (e) {}
+    };
+    const interval = setInterval(checkReadyOrders, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   const links = [
     { path: '/salon/mesas', label: 'Mapa Mesas', icon: <LayoutGrid size={20} /> },
