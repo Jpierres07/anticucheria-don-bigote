@@ -6,6 +6,8 @@ import PerfilModal from './PerfilModal';
 import { Flame, ShoppingBag, LogOut, User, LayoutDashboard, Utensils, Calendar, Menu, X, FileText, Boxes, Snowflake, DollarSign, Bell, Check, Trash2 } from 'lucide-react';
 import { useSocket } from '../hooks/useSocket';
 
+import api from '../services/api';
+
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
   const { cart } = useContext(CartContext);
@@ -17,7 +19,38 @@ const Navbar = () => {
 
   const totalItems = cart.reduce((acc, i) => acc + i.cantidad, 0);
 
-  // Escuchar avisos de cocina para el buzón del mozo
+  // Cargar y sincronizar notificaciones activas del buzón de cocina
+  useEffect(() => {
+    if (user && (user.rol === 'Mozo' || user.rol === 'Atención al Cliente y Limpieza' || user.rol === 'Admin' || user.rol === 'Administradora, Parrillera y Ventas')) {
+      const loadPendingNotifs = async () => {
+        try {
+          const res = await api.get('/cocina/pedidos');
+          const listos = res.data?.filter(p => p.estado_pedido === 'Listo' || p.estado_pedido === 'Servido' || p.estado_pedido === 'Listo Servido' || p.estado_pedido === 'Entregado');
+          if (listos && listos.length > 0) {
+            setNotifications(prev => {
+              const prevIds = new Set(prev.map(n => n.id_pedido));
+              const newItems = listos
+                .filter(p => !prevIds.has(p.id_pedido))
+                .map(p => ({
+                  id: p.id_pedido,
+                  id_pedido: p.id_pedido,
+                  mesaNum: p.id_mesa || p.numero_mesa || '1',
+                  mensaje: `🔔 ¡PLATO LISTO, PARA ENTREGAR! 🔥 Mesa ${p.id_mesa || '1'}`,
+                  hora: p.fecha_pedido ? new Date(p.fecha_pedido).toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' }) : 'Ahora',
+                  leido: false
+                }));
+              return newItems.length > 0 ? [...newItems, ...prev] : prev;
+            });
+          }
+        } catch (e) {}
+      };
+      loadPendingNotifs();
+      const interval = setInterval(loadPendingNotifs, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [user]);
+
+  // Escuchar avisos de cocina para el buzón del mozo en tiempo real
   useSocket('salon', (eventType, data) => {
     if (user && (user.rol === 'Mozo' || user.rol === 'Atención al Cliente y Limpieza' || user.rol === 'Admin' || user.rol === 'Administradora, Parrillera y Ventas')) {
       if (eventType === 'comanda_lista_mozo' || eventType === 'cambio_estado_parrilla' || eventType === 'cambio_estado') {
