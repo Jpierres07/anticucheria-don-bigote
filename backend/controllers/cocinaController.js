@@ -24,7 +24,9 @@ const actualizarEstadoParrilla = async (req, res) => {
         id_pedido: parseInt(id_pedido, 10),
         estado_pedido,
         id_mesa: ped?.id_mesa || 1,
-        numero_mesa: ped?.numero_mesa || ped?.id_mesa || 1
+        numero_mesa: ped?.numero_mesa || ped?.id_mesa || 1,
+        id_personal: ped?.id_personal || null,
+        mozo_nombre: ped?.mozo_nombre || null
       };
 
       req.io.emit('cambio_estado_parrilla', payload);
