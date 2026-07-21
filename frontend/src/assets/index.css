@@ -194,3 +194,25 @@ h1, h2, h3, h4, h5, h6 {
 .animate-glow {
   animation: pulseGlow 3s infinite ease-in-out;
 }
+
+/* Reglas de Impresión y Generación de PDF Limpio (Sin Módulos ni Navegación) */
+@media print {
+  body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+  header, aside, nav, .print\:hidden {
+    display: none !important;
+  }
+  main {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .glass-panel {
+    background: #ffffff !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+  }
+}

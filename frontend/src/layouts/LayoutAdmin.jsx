@@ -16,11 +16,11 @@ const LayoutAdmin = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex flex-col">
+    <div className="min-h-screen bg-zinc-950 flex flex-col print:bg-white print:min-h-0">
       <Navbar />
-      <div className="flex-1 flex flex-col md:flex-row container-custom py-6 gap-6">
-        {/* Sidebar Administradora (Sra. Norma) */}
-        <aside className="w-full md:w-64 glass-panel p-4 h-fit flex flex-col gap-2">
+      <div className="flex-1 flex flex-col md:flex-row container-custom py-6 gap-6 print:py-0 print:px-0 print:gap-0 print:w-full print:max-w-none">
+        {/* Sidebar Administradora (Sra. Norma) - Oculta en PDF e Impresión */}
+        <aside className="w-full md:w-64 glass-panel p-4 h-fit flex flex-col gap-2 print:hidden">
           <div className="px-3 py-2 text-xs font-semibold text-zinc-500 uppercase tracking-wider">
             Módulos Sra. Norma
           </div>
@@ -44,7 +44,7 @@ const LayoutAdmin = () => {
         </aside>
 
         {/* Main Content Area */}
-        <main className="flex-1">
+        <main className="flex-1 print:w-full print:p-0 print:m-0">
           <Outlet />
         </main>
       </div>

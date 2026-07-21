@@ -104,7 +104,7 @@ const Navbar = () => {
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-zinc-950/90 backdrop-blur-md border-b border-white/10 px-4 py-3">
+    <header className="sticky top-0 z-40 bg-zinc-950/90 backdrop-blur-md border-b border-white/10 px-4 py-3 print:hidden">
       <div className="container-custom flex items-center justify-between">
         {/* Brand Logo - Redirección según Rol */}
         <Link to={getHomePath()} className="flex items-center gap-2.5 group">
