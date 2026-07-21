@@ -27,6 +27,13 @@ const Navbar = () => {
     return '/';
   };
 
+  const getPerfilPath = () => {
+    if (!user) return '/login';
+    if (user.rol === 'Atención al Cliente y Limpieza' || user.rol === 'Mozo') return '/salon/perfil';
+    if (user.rol === 'Administradora, Parrillera y Ventas' || user.rol === 'Admin') return '/admin/perfil';
+    return '/cliente/perfil';
+  };
+
   return (
     <header className="sticky top-0 z-40 bg-zinc-950/90 backdrop-blur-md border-b border-white/10 px-4 py-3">
       <div className="container-custom flex items-center justify-between">
@@ -109,16 +116,16 @@ const Navbar = () => {
 
           {user ? (
             <div className="flex items-center gap-2.5 bg-zinc-900/80 border border-zinc-800 rounded-full pl-3 pr-1.5 py-1">
-              <button
-                onClick={() => setIsPerfilOpen(true)}
-                title="Editar Datos Personales y Cambiar Contraseña"
+              <Link
+                to={getPerfilPath()}
+                title="Ir a Mi Perfil (Editar Datos y Cambiar Contraseña)"
                 className="flex flex-col text-right hover:opacity-80 transition-opacity"
               >
                 <span className="text-xs font-bold text-white flex items-center gap-1">
                   <User size={12} className="text-orange-400" /> {user.nombre_completo || user.username}
                 </span>
                 <span className="text-[10px] text-orange-400 font-medium truncate max-w-[100px]">{user.rol}</span>
-              </button>
+              </Link>
               <button 
                 onClick={handleLogout}
                 title="Cerrar Sesión"

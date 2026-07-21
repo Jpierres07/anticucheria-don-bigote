@@ -21,6 +21,8 @@ import ReportesPage from '../pages/admin/ReportesPage';
 import Inventario from '../pages/admin/Inventario';
 import Congeladora from '../pages/admin/Congeladora';
 
+import PerfilPage from '../pages/PerfilPage';
+
 // Guard
 import ProtectedRoute from '../components/ProtectedRoute';
 
@@ -62,6 +64,7 @@ const AppRoutes = () => {
         <Route path="carta" element={<CartaQR />} />
         <Route path="mis-pedidos" element={<MisPedidos />} />
         <Route path="reservas" element={<Reservas />} />
+        <Route path="perfil" element={<PerfilPage />} />
       </Route>
 
       {/* Rutas Salón / Mozos (Edgar & Tania) */}
@@ -77,6 +80,7 @@ const AppRoutes = () => {
         <Route path="mesas" element={<MesasPiso />} />
         <Route path="tomar-pedido" element={<TomarPedido />} />
         <Route path="cobro" element={<CobroCaja />} />
+        <Route path="perfil" element={<PerfilPage />} />
       </Route>
 
       {/* Vista Cocina / Parrilla KDS (Sra. Norma) */}
@@ -103,6 +107,7 @@ const AppRoutes = () => {
         <Route path="reportes" element={<ReportesPage />} />
         <Route path="inventario" element={<Inventario />} />
         <Route path="congeladora" element={<Congeladora />} />
+        <Route path="perfil" element={<PerfilPage />} />
       </Route>
 
       {/* Fallback */}
