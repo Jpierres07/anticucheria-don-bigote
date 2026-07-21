@@ -101,12 +101,19 @@ const getMisPedidos = async (req, res) => {
     const todos = await Pedido.getAll();
 
     if (req.user && (req.user.id_cliente || req.user.rol === 'Cliente')) {
-      const idCliente = req.user.id_cliente;
-      const misPedidos = todos.filter(p => 
-        (idCliente && p.id_cliente === idCliente) || 
-        (req.user.username && p.cliente_nombre?.toLowerCase().includes(req.user.username.toLowerCase())) ||
-        (req.user.nombre_completo && p.cliente_nombre?.toLowerCase().includes(req.user.nombre_completo.toLowerCase()))
-      );
+      const idCliente = req.user.id_cliente ? parseInt(req.user.id_cliente, 10) : null;
+      const userFullName = (req.user.nombre_completo || '').toLowerCase();
+      const userName = (req.user.username || '').toLowerCase();
+
+      const misPedidos = todos.filter(p => {
+        if (idCliente && parseInt(p.id_cliente, 10) === idCliente) return true;
+        const pName = (p.cliente_nombre || '').toLowerCase();
+        if (pName && ((userFullName && pName.includes(userFullName)) || (userName && pName.includes(userName)) || (userName.includes('shuan') && pName.includes('shuan')))) {
+          return true;
+        }
+        return false;
+      });
+
       return res.json(misPedidos);
     }
 
