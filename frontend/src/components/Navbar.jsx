@@ -25,8 +25,8 @@ const Navbar = () => {
       const loadPendingNotifs = async () => {
         try {
           const res = await api.get('/cocina/pedidos');
-          // Filtrar ÚNICAMENTE comandas recien preparadas en estado Listo esperando entrega
-          const listos = res.data?.filter(p => p.estado_pedido === 'Listo' || p.estado_pedido === 'Listo Servido');
+          // Filtrar comandas notificadas desde cocina (Listo, Servido o Entregado desde parrilla)
+          const listos = res.data?.filter(p => p.estado_pedido === 'Listo' || p.estado_pedido === 'Servido' || p.estado_pedido === 'Listo Servido' || p.estado_pedido === 'Entregado');
           if (listos && listos.length > 0) {
             setNotifications(prev => {
               const prevIds = new Set(prev.map(n => n.id_pedido));
@@ -56,7 +56,7 @@ const Navbar = () => {
     if (user && (user.rol === 'Mozo' || user.rol === 'Atención al Cliente y Limpieza')) {
       if (eventType === 'comanda_lista_mozo' || eventType === 'cambio_estado_parrilla' || eventType === 'cambio_estado') {
         const est = data?.estado_pedido;
-        if (!est || est === 'Listo' || est === 'Listo Servido') {
+        if (!est || est === 'Listo' || est === 'Servido' || est === 'Listo Servido' || est === 'Entregado') {
           const mesaNum = data?.numero_mesa || data?.id_mesa || '1';
           const newNotif = {
             id: Date.now() + Math.random(),
