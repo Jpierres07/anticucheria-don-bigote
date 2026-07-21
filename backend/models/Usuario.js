@@ -191,6 +191,59 @@ class Usuario {
       return this.approveWorker(id_usuario);
     }
   }
+
+  static async updatePassword(id_usuario, newPasswordHash) {
+    if (isMock()) {
+      const u = mockDB.usuarios.find(x => x.id_usuario === parseInt(id_usuario, 10));
+      if (u) u.password_hash = newPasswordHash;
+      return true;
+    }
+    try {
+      const pool = await getPool();
+      if (!pool) return true;
+      await pool.request()
+        .input('id', id_usuario)
+        .input('pass', newPasswordHash)
+        .query('UPDATE Usuario SET password_hash = @pass WHERE id_usuario = @id');
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  static async updatePersonalData(id_usuario, { nombre, apellido, telefono }) {
+    if (isMock()) {
+      const u = mockDB.usuarios.find(x => x.id_usuario === parseInt(id_usuario, 10));
+      if (u) u.nombre = `${nombre} ${apellido || ''}`.trim();
+      return true;
+    }
+    try {
+      const pool = await getPool();
+      if (!pool) return true;
+
+      const userRes = await pool.request().input('id', id_usuario).query('SELECT id_personal, id_cliente FROM Usuario WHERE id_usuario = @id');
+      const u = userRes.recordset[0];
+
+      if (u && u.id_personal) {
+        await pool.request()
+          .input('id', u.id_personal)
+          .input('nom', nombre)
+          .input('ape', apellido || '')
+          .input('tel', telefono || '')
+          .query('UPDATE Personal SET nombre = ISNULL(@nom, nombre), apellido = ISNULL(@ape, apellido), telefono = ISNULL(@tel, telefono) WHERE id_personal = @id');
+      } else if (u && u.id_cliente) {
+        await pool.request()
+          .input('id', u.id_cliente)
+          .input('nom', nombre)
+          .input('ape', apellido || '')
+          .input('tel', telefono || '')
+          .query('UPDATE Cliente SET nombre = ISNULL(@nom, nombre), apellido = ISNULL(@ape, apellido), telefono = ISNULL(@tel, telefono) WHERE id_cliente = @id');
+      }
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
 }
 
 module.exports = Usuario;

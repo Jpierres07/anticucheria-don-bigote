@@ -8,5 +8,6 @@ router.post('/register', authController.register);
 router.get('/pending-workers', verifyToken, authController.getPendingWorkers);
 router.put('/approve-worker/:id', verifyToken, authController.approveWorker);
 router.get('/me', verifyToken, authController.getProfile);
+router.put('/profile', verifyToken, authController.updateProfile);
 
 module.exports = router;

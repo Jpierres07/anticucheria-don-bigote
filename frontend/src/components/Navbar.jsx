@@ -2,12 +2,14 @@ import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { CartContext } from '../context/CartContext';
+import PerfilModal from './PerfilModal';
 import { Flame, ShoppingBag, LogOut, User, LayoutDashboard, Utensils, Calendar, Menu, X, FileText, Boxes, Snowflake, DollarSign } from 'lucide-react';
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
   const { cart } = useContext(CartContext);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isPerfilOpen, setIsPerfilOpen] = useState(false);
   const navigate = useNavigate();
 
   const totalItems = cart.reduce((acc, i) => acc + i.cantidad, 0);
@@ -107,10 +109,16 @@ const Navbar = () => {
 
           {user ? (
             <div className="flex items-center gap-2.5 bg-zinc-900/80 border border-zinc-800 rounded-full pl-3 pr-1.5 py-1">
-              <div className="flex flex-col text-right">
-                <span className="text-xs font-bold text-white">{user.nombre_completo || user.username}</span>
+              <button
+                onClick={() => setIsPerfilOpen(true)}
+                title="Editar Datos Personales y Cambiar Contraseña"
+                className="flex flex-col text-right hover:opacity-80 transition-opacity"
+              >
+                <span className="text-xs font-bold text-white flex items-center gap-1">
+                  <User size={12} className="text-orange-400" /> {user.nombre_completo || user.username}
+                </span>
                 <span className="text-[10px] text-orange-400 font-medium truncate max-w-[100px]">{user.rol}</span>
-              </div>
+              </button>
               <button 
                 onClick={handleLogout}
                 title="Cerrar Sesión"
@@ -225,6 +233,9 @@ const Navbar = () => {
           )}
         </div>
       )}
+
+      {/* Modal de Mi Perfil y Cambiar Contraseña */}
+      <PerfilModal isOpen={isPerfilOpen} onClose={() => setIsPerfilOpen(false)} />
     </header>
   );
 };
