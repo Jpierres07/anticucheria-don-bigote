@@ -25,10 +25,10 @@ const LayoutMozo = () => {
   };
 
   useSocket('salon', (eventType, data) => {
-    if (eventType === 'comanda_lista_mozo' || eventType === 'cambio_estado') {
+    if (eventType === 'comanda_lista_mozo' || eventType === 'cambio_estado_parrilla' || eventType === 'cambio_estado') {
       playAlertSound();
       const mesaNum = data?.numero_mesa || data?.id_mesa || '1';
-      setAlertMsg(`🔔 ¡PLATO LISTO EN PARRILLA! 🔥 Llevar inmediatamente a Mesa ${mesaNum}`);
+      setAlertMsg(`🔔 ¡PLATO LISTO EN PARRILLA! 🔥 Bajar a cocina (1er Piso) a recoger el platillo para llevar a la Mesa ${mesaNum}`);
     }
   });
 
