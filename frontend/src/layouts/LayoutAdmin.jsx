@@ -8,11 +8,11 @@ const LayoutAdmin = () => {
 
   const links = [
     { path: '/admin/dashboard', label: 'Dashboard Financiero', icon: <LayoutDashboard size={18} /> },
-    { path: '/admin/reportes', label: 'Reportes PDF & Ventas', icon: <FileText size={18} className="text-amber-400" /> },
     { path: '/cocina/parrilla', label: 'Parrilla KDS (Cocina)', icon: <Flame size={18} className="text-orange-500" /> },
     { path: '/salon/cobro', label: 'Caja & Cobro de Mesas', icon: <DollarSign size={18} className="text-emerald-400" /> },
     { path: '/admin/inventario', label: 'Gestión de Insumos', icon: <Boxes size={18} /> },
-    { path: '/admin/congeladora', label: 'Cierre Congeladora', icon: <Snowflake size={18} /> }
+    { path: '/admin/congeladora', label: 'Cierre Congeladora', icon: <Snowflake size={18} className="text-cyan-400" /> },
+    { path: '/admin/reportes', label: 'Reportes PDF & Ventas', icon: <FileText size={18} className="text-amber-400" /> }
   ];
 
   return (

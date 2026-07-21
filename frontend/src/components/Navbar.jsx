@@ -82,9 +82,6 @@ const Navbar = () => {
               <Link to="/admin/dashboard" className="text-zinc-300 hover:text-orange-400 transition-colors flex items-center gap-1.5">
                 <LayoutDashboard size={16} /> Dashboard
               </Link>
-              <Link to="/admin/reportes" className="text-zinc-300 hover:text-orange-400 transition-colors flex items-center gap-1.5">
-                <FileText size={16} /> Reportes PDF
-              </Link>
               <Link to="/cocina/parrilla" className="text-orange-400 font-bold hover:text-orange-300 transition-colors flex items-center gap-1.5">
                 <Flame size={16} /> Parrilla KDS
               </Link>
@@ -96,6 +93,9 @@ const Navbar = () => {
               </Link>
               <Link to="/admin/congeladora" className="text-zinc-300 hover:text-orange-400 transition-colors">
                 Congeladora
+              </Link>
+              <Link to="/admin/reportes" className="text-zinc-300 hover:text-orange-400 transition-colors flex items-center gap-1.5">
+                <FileText size={16} className="text-amber-400" /> Reportes PDF
               </Link>
             </>
           )}
