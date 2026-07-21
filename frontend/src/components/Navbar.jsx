@@ -164,7 +164,7 @@ const Navbar = () => {
                 Congeladora
               </Link>
               <Link to="/admin/reportes" className="text-zinc-300 hover:text-orange-400 transition-colors flex items-center gap-1.5">
-                <FileText size={16} className="text-amber-400" /> Reportes PDF
+                <FileText size={16} className="text-amber-400" /> Reportes & Ventas
               </Link>
             </>
           )}
@@ -351,7 +351,7 @@ const Navbar = () => {
                 onClick={() => setMobileMenuOpen(false)} 
                 className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-zinc-200 hover:bg-orange-500/20 hover:text-orange-400"
               >
-                <FileText size={16} className="text-amber-400" /> Reportes PDF & Ventas
+                <FileText size={16} className="text-amber-400" /> Reportes & Ventas
               </Link>
               <Link 
                 to="/cocina/parrilla" 

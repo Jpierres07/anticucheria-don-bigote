@@ -146,7 +146,7 @@ const PerfilPage = () => {
         <div className="glass-panel p-8 space-y-6 border-zinc-800">
           <div className="border-b border-zinc-800 pb-4">
             <h3 className="text-lg font-bold text-white">Editar Datos Personales</h3>
-            <p className="text-xs text-zinc-400">Modifica tus nombres, apellidos y datos de contacto en la base de datos</p>
+            <p className="text-xs text-zinc-400">Modifica tus nombres, apellidos y datos de contacto en el sistema</p>
           </div>
 
           <form onSubmit={handleUpdateDatos} className="space-y-6 max-w-xl">

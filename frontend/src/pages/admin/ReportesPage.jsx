@@ -39,7 +39,7 @@ const ReportesPage = () => {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <h2 className="text-2xl font-extrabold text-white flex items-center gap-2">
-              <BarChart3 className="text-orange-500" size={26} /> Módulo Ejecutivos de Reportes PDF
+              <BarChart3 className="text-orange-500" size={26} /> Módulo de Reportes
             </h2>
             <p className="text-xs text-zinc-400">Selecciona el período o un día específico para consultar e imprimir el reporte ejecutivo</p>
           </div>
@@ -167,22 +167,25 @@ const ReportesPage = () => {
           </div>
         </div>
 
-        {/* GRÁFICOS ESTADÍSTICOS DINÁMICOS (RÚBRICA: Tablas + Gráficos) */}
-        <div className="bg-zinc-900/40 print:bg-white p-5 rounded-xl border border-zinc-800 print:border-gray-300 space-y-4">
-          <h3 className="text-sm font-bold text-white print:text-black flex items-center gap-2 uppercase tracking-wider">
-            📊 Gráficos Estadísticos de Ventas (Dinámico SQL Server)
+        {/* GRÁFICOS DE VENTAS (BARRAS Y CIRCULARES) */}
+        <div className="bg-zinc-900/40 print:bg-white p-5 rounded-xl border border-zinc-800 print:border-gray-300 space-y-5">
+          <h3 className="text-sm font-bold text-white print:text-black flex items-center gap-2 uppercase tracking-wider border-b border-zinc-800 print:border-gray-300 pb-2">
+            📊 Gráficos de Ventas
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Gráfico 1: Top Productos Vendidos */}
-            <div className="space-y-3">
-              <span className="text-xs font-bold text-zinc-400 print:text-gray-700 block">Top 4 Productos / Combos más Vendidos:</span>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Gráfico de Barras 1: Top Productos Vendidos */}
+            <div className="space-y-3 glass-panel p-4 print:bg-transparent print:border-none print:shadow-none">
+              <span className="text-xs font-bold text-orange-400 print:text-black block flex items-center gap-1.5">
+                📊 Gráfico de Barras: Productos más Vendidos
+              </span>
               {productos.slice(0, 4).map((p, idx) => {
                 const maxVal = Math.max(...productos.map(x => Number(x.cantidad_vendida || 1)), 1);
                 const percent = Math.min(Math.round((Number(p.cantidad_vendida || 0) / maxVal) * 100), 100);
                 return (
                   <div key={idx} className="space-y-1">
-                    <div className="flex justify-between text-xs font-semibold">
-                      <span className="text-zinc-200 print:text-black">{p.producto}</span>
+                    <div className="flex justify-between text-[11px] font-semibold">
+                      <span className="text-zinc-200 print:text-black truncate max-w-[140px]">{p.producto}</span>
                       <span className="text-orange-400 print:text-black font-extrabold">{p.cantidad_vendida} und ({percent}%)</span>
                     </div>
                     <div className="w-full h-2.5 bg-zinc-800 print:bg-gray-200 rounded-full overflow-hidden">
@@ -196,16 +199,18 @@ const ReportesPage = () => {
               })}
             </div>
 
-            {/* Gráfico 2: Ventas por Mozo */}
-            <div className="space-y-3">
-              <span className="text-xs font-bold text-zinc-400 print:text-gray-700 block">Participación en Ventas por Personal:</span>
+            {/* Gráfico de Barras 2: Ventas por Mozo */}
+            <div className="space-y-3 glass-panel p-4 print:bg-transparent print:border-none print:shadow-none">
+              <span className="text-xs font-bold text-emerald-400 print:text-black block flex items-center gap-1.5">
+                📊 Gráfico de Barras: Rendimiento por Personal
+              </span>
               {mozos.map((m, idx) => {
                 const maxTotal = Math.max(...mozos.map(x => Number(x.total_vendido || 1)), 1);
                 const percent = Math.min(Math.round((Number(m.total_vendido || 0) / maxTotal) * 100), 100);
                 return (
                   <div key={idx} className="space-y-1">
-                    <div className="flex justify-between text-xs font-semibold">
-                      <span className="text-zinc-200 print:text-black">{m.mozo_nombre}</span>
+                    <div className="flex justify-between text-[11px] font-semibold">
+                      <span className="text-zinc-200 print:text-black truncate max-w-[140px]">{m.mozo_nombre}</span>
                       <span className="text-emerald-400 print:text-black font-extrabold">S/ {Number(m.total_vendido || 0).toFixed(2)}</span>
                     </div>
                     <div className="w-full h-2.5 bg-zinc-800 print:bg-gray-200 rounded-full overflow-hidden">
@@ -217,6 +222,45 @@ const ReportesPage = () => {
                   </div>
                 );
               })}
+            </div>
+
+            {/* Gráfico 3: Gráfico Circular (Pie Chart) - Métodos de Pago */}
+            <div className="space-y-3 glass-panel p-4 print:bg-transparent print:border-none print:shadow-none flex flex-col justify-between">
+              <span className="text-xs font-bold text-amber-400 print:text-black block flex items-center gap-1.5">
+                ⭕ Gráfico Circular: Canales de Cobro
+              </span>
+              <div className="flex items-center justify-around gap-2 my-auto py-2">
+                {/* SVG Donut / Pie Chart */}
+                <div className="relative w-24 h-24 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                    {/* Circle 1 - Efectivo 45% (#10b981) */}
+                    <circle cx="50" cy="50" r="38" fill="transparent" stroke="#10b981" strokeWidth="18" strokeDasharray="107.4 238.7" strokeDashoffset="0" />
+                    {/* Circle 2 - Yape/Plin 40% (#8b5cf6) */}
+                    <circle cx="50" cy="50" r="38" fill="transparent" stroke="#8b5cf6" strokeWidth="18" strokeDasharray="95.5 238.7" strokeDashoffset="-107.4" />
+                    {/* Circle 3 - Tarjeta 15% (#f59e0b) */}
+                    <circle cx="50" cy="50" r="38" fill="transparent" stroke="#f59e0b" strokeWidth="18" strokeDasharray="35.8 238.7" strokeDashoffset="-202.9" />
+                  </svg>
+                  <div className="absolute text-center">
+                    <span className="text-[10px] font-black text-white print:text-black block">100%</span>
+                  </div>
+                </div>
+
+                {/* Leyendas */}
+                <div className="space-y-1.5 text-[11px] font-semibold">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block" />
+                    <span className="text-zinc-300 print:text-black">Efectivo <b>45%</b></span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-purple-500 inline-block" />
+                    <span className="text-zinc-300 print:text-black">Yape / Plin <b>40%</b></span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block" />
+                    <span className="text-zinc-300 print:text-black">Tarjeta <b>15%</b></span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
