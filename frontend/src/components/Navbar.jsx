@@ -19,13 +19,14 @@ const Navbar = () => {
 
   const totalItems = cart.reduce((acc, i) => acc + i.cantidad, 0);
 
-  // Cargar y sincronizar notificaciones activas del buzón de cocina
+  // Cargar y sincronizar notificaciones activas del buzón de cocina exclusivamente para Mozos
   useEffect(() => {
-    if (user && (user.rol === 'Mozo' || user.rol === 'Atención al Cliente y Limpieza' || user.rol === 'Admin' || user.rol === 'Administradora, Parrillera y Ventas')) {
+    if (user && (user.rol === 'Mozo' || user.rol === 'Atención al Cliente y Limpieza')) {
       const loadPendingNotifs = async () => {
         try {
           const res = await api.get('/cocina/pedidos');
-          const listos = res.data?.filter(p => p.estado_pedido === 'Listo' || p.estado_pedido === 'Servido' || p.estado_pedido === 'Listo Servido' || p.estado_pedido === 'Entregado');
+          // Filtrar ÚNICAMENTE comandas recien preparadas en estado Listo esperando entrega
+          const listos = res.data?.filter(p => p.estado_pedido === 'Listo' || p.estado_pedido === 'Listo Servido');
           if (listos && listos.length > 0) {
             setNotifications(prev => {
               const prevIds = new Set(prev.map(n => n.id_pedido));
@@ -50,12 +51,12 @@ const Navbar = () => {
     }
   }, [user]);
 
-  // Escuchar avisos de cocina para el buzón del mozo en tiempo real
+  // Escuchar avisos de cocina en tiempo real únicamente para los mozos
   useSocket('salon', (eventType, data) => {
-    if (user && (user.rol === 'Mozo' || user.rol === 'Atención al Cliente y Limpieza' || user.rol === 'Admin' || user.rol === 'Administradora, Parrillera y Ventas')) {
+    if (user && (user.rol === 'Mozo' || user.rol === 'Atención al Cliente y Limpieza')) {
       if (eventType === 'comanda_lista_mozo' || eventType === 'cambio_estado_parrilla' || eventType === 'cambio_estado') {
         const est = data?.estado_pedido;
-        if (!est || est === 'Listo' || est === 'Servido' || est === 'Listo Servido' || est === 'Entregado') {
+        if (!est || est === 'Listo' || est === 'Listo Servido') {
           const mesaNum = data?.numero_mesa || data?.id_mesa || '1';
           const newNotif = {
             id: Date.now() + Math.random(),
@@ -183,7 +184,7 @@ const Navbar = () => {
           )}
 
           {/* BUZÓN DE NOTIFICACIONES DEL MOZO */}
-          {user && (user.rol === 'Mozo' || user.rol === 'Atención al Cliente y Limpieza' || user.rol === 'Admin' || user.rol === 'Administradora, Parrillera y Ventas') && (
+          {user && (user.rol === 'Mozo' || user.rol === 'Atención al Cliente y Limpieza') && (
             <div className="relative">
               <button
                 onClick={() => setIsBuzonOpen(!isBuzonOpen)}
