@@ -167,6 +167,60 @@ const ReportesPage = () => {
           </div>
         </div>
 
+        {/* GRÁFICOS ESTADÍSTICOS DINÁMICOS (RÚBRICA: Tablas + Gráficos) */}
+        <div className="bg-zinc-900/40 print:bg-white p-5 rounded-xl border border-zinc-800 print:border-gray-300 space-y-4">
+          <h3 className="text-sm font-bold text-white print:text-black flex items-center gap-2 uppercase tracking-wider">
+            📊 Gráficos Estadísticos de Ventas (Dinámico SQL Server)
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Gráfico 1: Top Productos Vendidos */}
+            <div className="space-y-3">
+              <span className="text-xs font-bold text-zinc-400 print:text-gray-700 block">Top 4 Productos / Combos más Vendidos:</span>
+              {productos.slice(0, 4).map((p, idx) => {
+                const maxVal = Math.max(...productos.map(x => Number(x.cantidad_vendida || 1)), 1);
+                const percent = Math.min(Math.round((Number(p.cantidad_vendida || 0) / maxVal) * 100), 100);
+                return (
+                  <div key={idx} className="space-y-1">
+                    <div className="flex justify-between text-xs font-semibold">
+                      <span className="text-zinc-200 print:text-black">{p.producto}</span>
+                      <span className="text-orange-400 print:text-black font-extrabold">{p.cantidad_vendida} und ({percent}%)</span>
+                    </div>
+                    <div className="w-full h-2.5 bg-zinc-800 print:bg-gray-200 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-orange-500 to-amber-400 print:bg-black rounded-full transition-all duration-500"
+                        style={{ width: `${Math.max(percent, 5)}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Gráfico 2: Ventas por Mozo */}
+            <div className="space-y-3">
+              <span className="text-xs font-bold text-zinc-400 print:text-gray-700 block">Participación en Ventas por Personal:</span>
+              {mozos.map((m, idx) => {
+                const maxTotal = Math.max(...mozos.map(x => Number(x.total_vendido || 1)), 1);
+                const percent = Math.min(Math.round((Number(m.total_vendido || 0) / maxTotal) * 100), 100);
+                return (
+                  <div key={idx} className="space-y-1">
+                    <div className="flex justify-between text-xs font-semibold">
+                      <span className="text-zinc-200 print:text-black">{m.mozo_nombre}</span>
+                      <span className="text-emerald-400 print:text-black font-extrabold">S/ {Number(m.total_vendido || 0).toFixed(2)}</span>
+                    </div>
+                    <div className="w-full h-2.5 bg-zinc-800 print:bg-gray-200 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 print:bg-gray-800 rounded-full transition-all duration-500"
+                        style={{ width: `${Math.max(percent, 5)}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
         {/* Sección 1: Platillos, Combos y Bebidas Vendidas */}
         <div className={`space-y-3 ${printSection !== 'all' && printSection !== 'productos' ? 'print:hidden' : ''}`}>
           <div className="flex justify-between items-center pt-2">
