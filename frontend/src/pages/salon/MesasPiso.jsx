@@ -8,8 +8,16 @@ const MesasPiso = () => {
   const { data: mesasData, loading, refetch } = useFetch('/salon/mesas');
   const [selectedPiso, setSelectedPiso] = useState(1);
 
+  // Sincronización automática de estado de mesas cada 2 segundos y por WebSockets
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      refetch();
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [refetch]);
+
   useSocket('salon', (eventType) => {
-    if (eventType === 'comanda_lista_mozo' || eventType === 'mesa_liberada' || eventType === 'nuevo_pedido') {
+    if (eventType === 'mesa_liberada' || eventType === 'pago_registrado' || eventType === 'comanda_lista_mozo' || eventType === 'nuevo_pedido' || eventType === 'cambio_estado') {
       refetch();
     }
   });
