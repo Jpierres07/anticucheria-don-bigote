@@ -65,7 +65,7 @@ const mockDatabase = {
     { id_insumo: 1, nombre_insumo: 'Corazón de Res', unidad_compra: 'Kg', unidad_consumo: 'Porcion', factor_conversion: 5.00, stock_actual: 15.00, id_proveedor: 1, proveedor: 'Mercado Central de Huaraz' },
     { id_insumo: 2, nombre_insumo: 'Rachi (Pancita)', unidad_compra: 'Kg', unidad_consumo: 'Porcion', factor_conversion: 4.00, stock_actual: 20.00, id_proveedor: 1, proveedor: 'Mercado Central de Huaraz' },
     { id_insumo: 3, nombre_insumo: 'Pechuga de Pollo', unidad_compra: 'Kg', unidad_consumo: 'Porcion', factor_conversion: 4.00, stock_actual: 24.00, id_proveedor: 1, proveedor: 'Mercado Central de Huaraz' },
-    { id_insumo: 4, nombre_insumo: 'Gas GLP 45Kg', unidad_compra: 'Balón', unidad_consumo: 'PorcionParrilla', factor_conversion: 450.00, stock_actual: 900.00, id_proveedor: 3, proveedor: 'SolGas / LlamaGas' }
+    { id_insumo: 4, nombre_insumo: 'Gas GLP 10Kg', unidad_compra: 'Balón', unidad_consumo: 'PorcionParrilla', factor_conversion: 100.00, stock_actual: 300.00, id_proveedor: 3, proveedor: 'SolGas / LlamaGas' }
   ],
   pedidos: [
     {
