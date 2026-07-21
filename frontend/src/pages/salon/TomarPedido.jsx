@@ -101,7 +101,7 @@ const TomarPedido = () => {
             </select>
           </div>
 
-          {/* Platillos Rpidos */}
+          {/* Platillos Principales */}
           <div className="space-y-3">
             <h3 className="text-sm font-bold text-zinc-400 uppercase tracking-wider">Platillos Principales</h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -117,6 +117,36 @@ const TomarPedido = () => {
               ))}
             </div>
           </div>
+
+          {/* Combos Parrilleros con Imágenes */}
+          {combos && combos.length > 0 && (
+            <div className="space-y-3 pt-2">
+              <h3 className="text-sm font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                ⭐ Combos Parrilleros (Promociones)
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {combos.map(c => (
+                  <button
+                    key={c.id_combo}
+                    type="button"
+                    onClick={() => addToCart({ ...c, precio: c.precio_combo })}
+                    className="glass-panel p-2.5 text-left hover:border-amber-500/50 transition-colors group flex items-center gap-3 border-amber-500/20 bg-amber-500/5 rounded-xl"
+                  >
+                    <img 
+                      src={c.imagen_url || 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80'} 
+                      alt={c.nombre}
+                      className="w-14 h-14 rounded-lg object-cover flex-shrink-0 group-hover:scale-105 transition-transform"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <span className="font-bold text-xs text-white group-hover:text-amber-400 transition-colors block truncate">{c.nombre}</span>
+                      <span className="text-[10px] text-zinc-400 block line-clamp-1">{c.descripcion}</span>
+                      <span className="text-xs font-black text-amber-400 mt-0.5 block">S/ {Number(c.precio_combo || 0).toFixed(2)}</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Resumen de Comanda a Enviar */}

@@ -49,11 +49,41 @@ const mockDatabase = {
     { id_producto: 13, nombre: 'Chicha Morada 1 Litro', precio: 10.00, id_categoria: 3, categoria: 'Bebidas', imagen_url: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=800&q=80' }
   ],
   combos: [
-    { id_combo: 1, nombre: 'Pollo a la Parrilla + Rachi', descripcion: 'Pollo a la parrilla servido con porción de rachi tradicional', precio_combo: 30.00, imagen_url: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80' },
-    { id_combo: 2, nombre: 'Rachi + Anticuchos de Pollo', descripcion: 'Porción de rachi acompañado de anticuchos de pollo', precio_combo: 22.00, imagen_url: 'https://images.unsplash.com/photo-1532636875304-0c89119d9b4d?auto=format&fit=crop&w=800&q=80' },
-    { id_combo: 3, nombre: 'Rachi + Anticuchos de Corazón', descripcion: 'Porción de rachi con anticuchos de corazón', precio_combo: 28.00, imagen_url: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=800&q=80' },
-    { id_combo: 4, nombre: 'Rachi con Mollejita', descripcion: 'Porción combinada de rachi con mollejitas', precio_combo: 15.00, imagen_url: 'https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?auto=format&fit=crop&w=800&q=80' },
-    { id_combo: 5, nombre: 'Trío Parrillero Don Bigote', descripcion: 'Anticuchos de Pollo + Corazón + Bofe', precio_combo: 23.00, imagen_url: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80' }
+    { 
+      id_combo: 1, 
+      nombre: 'Pollo a la Parrilla + Rachi', 
+      descripcion: 'Jugoso pollo a la parrilla servido con porción generosa de rachi crujiente, papas doradas y ají macerado.', 
+      precio_combo: 30.00, 
+      imagen_url: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80' 
+    },
+    { 
+      id_combo: 2, 
+      nombre: 'Rachi + Anticuchos de Pollo', 
+      descripcion: 'Porción dorada de rachi acompañado de finos trozos de pollo a la parrilla en brocheta.', 
+      precio_combo: 22.00, 
+      imagen_url: 'https://images.unsplash.com/photo-1532636875304-0c89119d9b4d?auto=format&fit=crop&w=800&q=80' 
+    },
+    { 
+      id_combo: 3, 
+      nombre: 'Rachi + Anticuchos de Corazón', 
+      descripcion: 'La combinación perfecta: Rachi crocante con brochetas tradicionales de corazón de res a la brasa.', 
+      precio_combo: 28.00, 
+      imagen_url: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=800&q=80' 
+    },
+    { 
+      id_combo: 4, 
+      nombre: 'Rachi con Mollejita', 
+      descripcion: 'Porción caliente y crujiente de rachi sazonado servido con sabrosas mollejitas a la parrilla.', 
+      precio_combo: 15.00, 
+      imagen_url: 'https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?auto=format&fit=crop&w=800&q=80' 
+    },
+    { 
+      id_combo: 5, 
+      nombre: 'Trío Parrillero Don Bigote', 
+      descripcion: 'El gran especial de la casa: Brochetas de Pollo + Corazón de Res + Bofe con papas sancochadas y ají de choclo.', 
+      precio_combo: 23.00, 
+      imagen_url: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80' 
+    }
   ],
   mesas: [
     { id_mesa: 1, numero_mesa: 1, capacidad: 4, piso: 1, estado_mesa: 'Libre' },
