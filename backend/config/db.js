@@ -77,23 +77,22 @@ const mockDatabase = {
       id_cliente: 1,
       cliente_nombre: 'Jean-Pierre Shuan',
       id_personal: 2,
-      id_mesa: 1,
-      numero_mesa: 1,
+      id_mesa: 2,
+      numero_mesa: 2,
       fecha_pedido: new Date().toISOString(),
       total: 44.00,
-      estado_pedido: 'En Proceso',
+      estado_pedido: 'Listo',
       tipo_servicio: 'Local',
       detalles: [
         { id_producto: 5, nombre: 'Anticuchos de Corazón', cantidad: 2, precio_unitario: 12.00 },
-        { id_producto: 2, nombre: 'Rachi Rachi', cantidad: 1, precio_unitario: 16.00 },
-        { id_producto: 10, nombre: 'Gaseosa personal 296 ml', cantidad: 1, precio_unitario: 4.00 }
+        { id_producto: 2, nombre: 'Rachi Rachi', cantidad: 1, precio_unitario: 16.00 }
       ]
     },
     {
       id_pedido: 102,
-      id_cliente: 2,
-      cliente_nombre: 'Ana Ramirez',
-      id_personal: 3,
+      id_cliente: 1,
+      cliente_nombre: 'Mario Fernando',
+      id_personal: 2,
       id_mesa: 4,
       numero_mesa: 4,
       fecha_pedido: new Date().toISOString(),
