@@ -6,11 +6,16 @@ import { Printer, Calendar, User, ShoppingBag, DollarSign, Award, Flame, Filter,
 const ReportesPage = () => {
   const [periodo, setPeriodo] = useState('diario'); // 'diario' | 'semanal' | 'mensual'
   const [mozo, setMozo] = useState('todos'); // 'todos' | 'edgar.milla' | 'tania.espinoza' | 'norma.shuan'
+  const [printSection, setPrintSection] = useState('all'); // 'all' | 'productos' | 'mozos' | 'clientes' | 'pedidos'
 
   const { data, loading, refetch } = useFetch(`/admin/reportes/ventas?periodo=${periodo}&mozo=${mozo}`);
 
-  const handlePrint = () => {
-    window.print();
+  const handlePrintSection = (sectionId) => {
+    setPrintSection(sectionId);
+    setTimeout(() => {
+      window.print();
+      setPrintSection('all');
+    }, 150);
   };
 
   const resumen = data?.resumen || { totalVentas: 0, totalPedidos: 0, totalProductos: 0 };
@@ -25,13 +30,13 @@ const ReportesPage = () => {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <h2 className="text-2xl font-extrabold text-white flex items-center gap-2">
-              <BarChart3 className="text-orange-500" size={26} /> Generador de Reportes Ejecutivos PDF
+              <BarChart3 className="text-orange-500" size={26} /> Módulo Ejecutivos de Reportes PDF
             </h2>
-            <p className="text-xs text-zinc-400">Filtra por periodo, mozo a cargo y productos vendidos para la Sra. Norma Shuan</p>
+            <p className="text-xs text-zinc-400">Cada sección cuenta con su propio botón de exportación individual a PDF / Impresora</p>
           </div>
 
-          <Button onClick={handlePrint} className="text-sm py-2.5 px-5 bg-gradient-to-r from-orange-500 to-amber-600 font-bold">
-            <Printer size={18} /> Imprimir / Exportar PDF
+          <Button onClick={() => handlePrintSection('all')} className="text-xs py-2.5 px-4 bg-gradient-to-r from-orange-500 to-amber-600 font-bold">
+            <Printer size={16} /> Imprimir Reporte General Completo
           </Button>
         </div>
 
@@ -103,7 +108,7 @@ const ReportesPage = () => {
 
           <div className="text-right">
             <span className="badge badge-warning print:border-black print:text-black uppercase text-xs">
-              Reporte {periodo}
+              Reporte {periodo} {printSection !== 'all' ? `(${printSection.toUpperCase()})` : ''}
             </span>
             <p className="text-xs text-zinc-400 print:text-gray-600 mt-1">
               Fecha de Emisión: <b>{new Date().toLocaleDateString('es-PE')}</b>
@@ -136,11 +141,19 @@ const ReportesPage = () => {
           </div>
         </div>
 
-        {/* Tabla 1: ¿QUÉ SE HA VENDIDO? (Desglose de Platillos y Combos) */}
-        <div className="space-y-3">
-          <h3 className="text-base font-bold text-white print:text-black flex items-center gap-2 pt-2">
-            <Award size={18} className="text-amber-400 print:text-black" /> Desglose Detallado: Platillos, Combos y Bebidas Vendidas
-          </h3>
+        {/* Sección 1: Platillos, Combos y Bebidas Vendidas */}
+        <div className={`space-y-3 ${printSection !== 'all' && printSection !== 'productos' ? 'print:hidden' : ''}`}>
+          <div className="flex justify-between items-center pt-2">
+            <h3 className="text-base font-bold text-white print:text-black flex items-center gap-2">
+              <Award size={18} className="text-amber-400 print:text-black" /> Desglose Detallado: Platillos, Combos y Bebidas Vendidas
+            </h3>
+            <button
+              onClick={() => handlePrintSection('productos')}
+              className="text-[11px] font-bold px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-orange-500 text-zinc-300 hover:text-white transition-all flex items-center gap-1.5 print:hidden border border-zinc-700"
+            >
+              <Printer size={13} /> Imprimir / PDF Productos
+            </button>
+          </div>
           <table className="w-full text-left text-xs">
             <thead className="bg-zinc-900/90 print:bg-gray-200 text-zinc-400 print:text-black font-semibold border-b border-zinc-800 print:border-gray-400 uppercase">
               <tr>
@@ -173,11 +186,19 @@ const ReportesPage = () => {
           </table>
         </div>
 
-        {/* Tabla 2: Rendimiento por Mozo */}
-        <div className="space-y-3 pt-4">
-          <h3 className="text-base font-bold text-white print:text-black flex items-center gap-2">
-            <User size={18} className="text-orange-400 print:text-black" /> Rendimiento de Ventas por Mozo / Personal
-          </h3>
+        {/* Sección 2: Rendimiento por Mozo */}
+        <div className={`space-y-3 pt-4 ${printSection !== 'all' && printSection !== 'mozos' ? 'print:hidden' : ''}`}>
+          <div className="flex justify-between items-center">
+            <h3 className="text-base font-bold text-white print:text-black flex items-center gap-2">
+              <User size={18} className="text-orange-400 print:text-black" /> Rendimiento de Ventas por Mozo / Personal
+            </h3>
+            <button
+              onClick={() => handlePrintSection('mozos')}
+              className="text-[11px] font-bold px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-orange-500 text-zinc-300 hover:text-white transition-all flex items-center gap-1.5 print:hidden border border-zinc-700"
+            >
+              <Printer size={13} /> Imprimir / PDF Mozos
+            </button>
+          </div>
           <table className="w-full text-left text-xs">
             <thead className="bg-zinc-900/90 print:bg-gray-200 text-zinc-400 print:text-black font-semibold border-b border-zinc-800 print:border-gray-400 uppercase">
               <tr>
@@ -206,11 +227,19 @@ const ReportesPage = () => {
           </table>
         </div>
 
-        {/* Tabla 3: Ranking de Ventas por Cliente Frecuente */}
-        <div className="space-y-3 pt-4">
-          <h3 className="text-base font-bold text-white print:text-black flex items-center gap-2">
-            <Flame size={18} className="text-amber-500 print:text-black" /> 🏆 Ranking de Consumo por Cliente Frecuente (Fidelización)
-          </h3>
+        {/* Sección 3: Ranking de Ventas por Cliente Frecuente */}
+        <div className={`space-y-3 pt-4 ${printSection !== 'all' && printSection !== 'clientes' ? 'print:hidden' : ''}`}>
+          <div className="flex justify-between items-center">
+            <h3 className="text-base font-bold text-white print:text-black flex items-center gap-2">
+              <Flame size={18} className="text-amber-500 print:text-black" /> 🏆 Ranking de Consumo por Cliente Frecuente (Fidelización)
+            </h3>
+            <button
+              onClick={() => handlePrintSection('clientes')}
+              className="text-[11px] font-bold px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-orange-500 text-zinc-300 hover:text-white transition-all flex items-center gap-1.5 print:hidden border border-zinc-700"
+            >
+              <Printer size={13} /> Imprimir / PDF Clientes VIP
+            </button>
+          </div>
           <table className="w-full text-left text-xs">
             <thead className="bg-zinc-900/90 print:bg-gray-200 text-zinc-400 print:text-black font-semibold border-b border-zinc-800 print:border-gray-400 uppercase">
               <tr>
@@ -225,12 +254,12 @@ const ReportesPage = () => {
                 data.ventasPorCliente.map((c, idx) => (
                   <tr key={idx} className="hover:bg-zinc-900/40">
                     <td className="p-3 font-bold flex items-center gap-2">
-                      <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-400 font-extrabold text-[10px] flex items-center justify-center">
+                      <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-400 font-extrabold text-[10px] flex items-center justify-center print:hidden">
                         #{idx + 1}
                       </span>
                       {c.cliente_nombre}
                     </td>
-                    <td className="p-3 text-center font-bold text-zinc-300">{c.cantidad_pedidos} visitas</td>
+                    <td className="p-3 text-center font-bold text-zinc-300 print:text-black">{c.cantidad_pedidos} visitas</td>
                     <td className="p-3 text-right font-extrabold text-emerald-400 print:text-black">
                       S/ {Number(c.total_consumido || 0).toFixed(2)}
                     </td>
@@ -248,6 +277,49 @@ const ReportesPage = () => {
               ) : (
                 <tr>
                   <td colSpan="4" className="p-4 text-center text-zinc-500">Sin datos de consumo por cliente.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Sección 4: Histórico de Transacciones */}
+        <div className={`space-y-3 pt-4 ${printSection !== 'all' && printSection !== 'pedidos' ? 'print:hidden' : ''}`}>
+          <div className="flex justify-between items-center">
+            <h3 className="text-base font-bold text-white print:text-black flex items-center gap-2">
+              <ShoppingBag size={18} className="text-sky-400 print:text-black" /> Histórico de Transacciones y Comandas Atendidas
+            </h3>
+            <button
+              onClick={() => handlePrintSection('pedidos')}
+              className="text-[11px] font-bold px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-orange-500 text-zinc-300 hover:text-white transition-all flex items-center gap-1.5 print:hidden border border-zinc-700"
+            >
+              <Printer size={13} /> Imprimir / PDF Transacciones
+            </button>
+          </div>
+          <table className="w-full text-left text-xs">
+            <thead className="bg-zinc-900/90 print:bg-gray-200 text-zinc-400 print:text-black font-semibold border-b border-zinc-800 print:border-gray-400 uppercase">
+              <tr>
+                <th className="p-3">ID Pedido</th>
+                <th className="p-3">Fecha y Hora</th>
+                <th className="p-3 text-center">Mesa</th>
+                <th className="p-3">Atendido por</th>
+                <th className="p-3 text-right">Monto Total</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-800 print:divide-gray-300 text-zinc-200 print:text-black">
+              {pedidos.length > 0 ? (
+                pedidos.map((p, idx) => (
+                  <tr key={idx}>
+                    <td className="p-3 font-bold">#{p.id_pedido}</td>
+                    <td className="p-3 text-zinc-400 print:text-black">{new Date(p.fecha_pedido).toLocaleString('es-PE')}</td>
+                    <td className="p-3 text-center font-bold">Mesa {p.id_mesa || '1'}</td>
+                    <td className="p-3 font-medium">{p.mozo_nombre}</td>
+                    <td className="p-3 text-right font-bold text-emerald-400 print:text-black">S/ {Number(p.total || 0).toFixed(2)}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="5" className="p-4 text-center text-zinc-500">Sin transacciones en el periodo.</td>
                 </tr>
               )}
             </tbody>
