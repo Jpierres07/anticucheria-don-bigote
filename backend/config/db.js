@@ -66,7 +66,7 @@ const mockDatabase = {
     { id_insumo: 2, nombre_insumo: 'Rachi (Pancita)', unidad_compra: 'Kg', unidad_consumo: 'Porcion', factor_conversion: 4.00, stock_actual: 20.00, id_proveedor: 1, proveedor: 'Mercado Central de Huaraz' },
     { id_insumo: 3, nombre_insumo: 'Pechuga de Pollo', unidad_compra: 'Kg', unidad_consumo: 'Porcion', factor_conversion: 4.00, stock_actual: 24.00, id_proveedor: 1, proveedor: 'Mercado Central de Huaraz' },
     { id_insumo: 4, nombre_insumo: 'Bofe de Res', unidad_compra: 'Kg', unidad_consumo: 'Porcion', factor_conversion: 4.00, stock_actual: 15.00, id_proveedor: 1, proveedor: 'Mercado Central de Huaraz' },
-    { id_insumo: 5, nombre_insumo: 'Patitas de Pollo/Cerdo', unidad_compra: 'Kg', unidad_consumo: 'Porcion', factor_conversion: 5.00, stock_actual: 12.00, id_proveedor: 1, proveedor: 'Mercado Central de Huaraz' },
+    { id_insumo: 5, nombre_insumo: 'Patitas de Pollo', unidad_compra: 'Kg', unidad_consumo: 'Porcion', factor_conversion: 5.00, stock_actual: 12.00, id_proveedor: 1, proveedor: 'Mercado Central de Huaraz' },
     { id_insumo: 6, nombre_insumo: 'Alitas de Pollo', unidad_compra: 'Kg', unidad_consumo: 'Porcion', factor_conversion: 6.00, stock_actual: 20.00, id_proveedor: 1, proveedor: 'Mercado Central de Huaraz' },
     { id_insumo: 7, nombre_insumo: 'Chorizo Parrillero', unidad_compra: 'Paquete (10u)', unidad_consumo: 'Porcion', factor_conversion: 10.00, stock_actual: 30.00, id_proveedor: 1, proveedor: 'Mercado Central de Huaraz' },
     { id_insumo: 8, nombre_insumo: 'Gas GLP 10Kg', unidad_compra: 'Balón', unidad_consumo: 'PorcionParrilla', factor_conversion: 100.00, stock_actual: 300.00, id_proveedor: 3, proveedor: 'SolGas / LlamaGas' }
