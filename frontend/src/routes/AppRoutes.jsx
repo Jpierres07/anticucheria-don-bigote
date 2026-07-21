@@ -20,6 +20,7 @@ import Dashboard from '../pages/admin/Dashboard';
 import ReportesPage from '../pages/admin/ReportesPage';
 import Inventario from '../pages/admin/Inventario';
 import Congeladora from '../pages/admin/Congeladora';
+import PlatillosPage from '../pages/admin/PlatillosPage';
 
 import PerfilPage from '../pages/PerfilPage';
 
@@ -104,6 +105,7 @@ const AppRoutes = () => {
       >
         <Route index element={<Navigate to="/admin/dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
+        <Route path="platillos" element={<PlatillosPage />} />
         <Route path="reportes" element={<ReportesPage />} />
         <Route path="inventario" element={<Inventario />} />
         <Route path="congeladora" element={<Congeladora />} />

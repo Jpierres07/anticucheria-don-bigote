@@ -1,13 +1,14 @@
 import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import { LayoutDashboard, Flame, Boxes, Snowflake, FileText, DollarSign } from 'lucide-react';
+import { LayoutDashboard, Flame, Boxes, Snowflake, FileText, DollarSign, UtensilsCrossed } from 'lucide-react';
 
 const LayoutAdmin = () => {
   const location = useLocation();
 
   const links = [
     { path: '/admin/dashboard', label: 'Dashboard Financiero', icon: <LayoutDashboard size={18} /> },
+    { path: '/admin/platillos', label: 'Gestión de Platillos', icon: <UtensilsCrossed size={18} className="text-orange-400" /> },
     { path: '/cocina/parrilla', label: 'Parrilla KDS (Cocina)', icon: <Flame size={18} className="text-orange-500" /> },
     { path: '/salon/cobro', label: 'Caja & Cobro de Mesas', icon: <DollarSign size={18} className="text-emerald-400" /> },
     { path: '/admin/inventario', label: 'Gestión de Insumos', icon: <Boxes size={18} /> },
