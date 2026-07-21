@@ -109,8 +109,26 @@ const getReporteVentas = async (req, res) => {
           ORDER BY p.fecha_pedido DESC
         `);
 
+      // Ventas por Cliente Frecuente
+      const clientesRes = await pool.request()
+        .input('mozo', mozo)
+        .query(`
+          SELECT 
+            COALESCE(cl.nombre + ' ' + cl.apellido, 'Cliente Salón / QR') AS cliente_nombre,
+            COUNT(p.id_pedido) AS cantidad_pedidos,
+            SUM(p.total) AS total_consumido
+          FROM Pedido p
+          LEFT JOIN Cliente cl ON p.id_cliente = cl.id_cliente
+          LEFT JOIN Personal per ON p.id_personal = per.id_personal
+          LEFT JOIN Usuario u ON per.id_personal = u.id_personal
+          WHERE ${dateCondition} ${mozoCondition}
+          GROUP BY COALESCE(cl.nombre + ' ' + cl.apellido, 'Cliente Salón / QR')
+          ORDER BY total_consumido DESC
+        `);
+
       const prods = prodsRes.recordset || [];
       const mozos = mozosRes.recordset || [];
+      const clientes = clientesRes.recordset || [];
       const peds = pedidosRes.recordset || [];
 
       return res.json({
@@ -123,6 +141,7 @@ const getReporteVentas = async (req, res) => {
         },
         productosVendidos: prods,
         ventasPorMozo: mozos,
+        ventasPorCliente: clientes,
         pedidos: peds
       });
     }

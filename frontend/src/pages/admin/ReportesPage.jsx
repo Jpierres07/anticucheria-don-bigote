@@ -206,6 +206,54 @@ const ReportesPage = () => {
           </table>
         </div>
 
+        {/* Tabla 3: Ranking de Ventas por Cliente Frecuente */}
+        <div className="space-y-3 pt-4">
+          <h3 className="text-base font-bold text-white print:text-black flex items-center gap-2">
+            <Flame size={18} className="text-amber-500 print:text-black" /> 🏆 Ranking de Consumo por Cliente Frecuente (Fidelización)
+          </h3>
+          <table className="w-full text-left text-xs">
+            <thead className="bg-zinc-900/90 print:bg-gray-200 text-zinc-400 print:text-black font-semibold border-b border-zinc-800 print:border-gray-400 uppercase">
+              <tr>
+                <th className="p-3">Cliente / Comensal</th>
+                <th className="p-3 text-center">Visitas / Pedidos Realizados</th>
+                <th className="p-3 text-right">Consumo Acumulado</th>
+                <th className="p-3 text-center print:hidden">Nivel Fidelidad</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-800 print:divide-gray-300 text-zinc-200 print:text-black">
+              {data?.ventasPorCliente && data.ventasPorCliente.length > 0 ? (
+                data.ventasPorCliente.map((c, idx) => (
+                  <tr key={idx} className="hover:bg-zinc-900/40">
+                    <td className="p-3 font-bold flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-400 font-extrabold text-[10px] flex items-center justify-center">
+                        #{idx + 1}
+                      </span>
+                      {c.cliente_nombre}
+                    </td>
+                    <td className="p-3 text-center font-bold text-zinc-300">{c.cantidad_pedidos} visitas</td>
+                    <td className="p-3 text-right font-extrabold text-emerald-400 print:text-black">
+                      S/ {Number(c.total_consumido || 0).toFixed(2)}
+                    </td>
+                    <td className="p-3 text-center print:hidden">
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                        idx === 0 
+                          ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40' 
+                          : 'bg-zinc-800 text-zinc-400'
+                      }`}>
+                        {idx === 0 ? '👑 Cliente VIP #1' : 'Cliente Frecuente'}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4" className="p-4 text-center text-zinc-500">Sin datos de consumo por cliente.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
         {/* Pie de Firma del Reporte */}
         <div className="pt-12 flex justify-between items-end text-xs text-zinc-500 print:text-gray-700">
           <div>
