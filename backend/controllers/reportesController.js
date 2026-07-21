@@ -134,10 +134,22 @@ const getReporteVentas = async (req, res) => {
           ORDER BY total_consumido DESC
         `);
 
+      // Lista Completa de Personal Registrado en BD
+      const allPersonalRes = await pool.request().query(`
+        SELECT per.id_personal, 
+               per.nombre + ' ' + ISNULL(per.apellido, '') AS nombre_completo, 
+               ISNULL(u.username, LOWER(per.nombre)) AS username, 
+               ISNULL(c.nombre_cargo, 'Personal') AS cargo
+        FROM Personal per
+        LEFT JOIN Usuario u ON per.id_personal = u.id_personal
+        LEFT JOIN Cargo c ON per.id_cargo = c.id_cargo
+      `);
+
       const prods = prodsRes.recordset || [];
       const mozos = mozosRes.recordset || [];
       const clientes = clientesRes.recordset || [];
       const peds = pedidosRes.recordset || [];
+      const personalList = allPersonalRes.recordset || [];
 
       return res.json({
         periodo,
@@ -150,9 +162,17 @@ const getReporteVentas = async (req, res) => {
         productosVendidos: prods,
         ventasPorMozo: mozos,
         ventasPorCliente: clientes,
-        pedidos: peds
+        pedidos: peds,
+        personalList
       });
     }
+
+    // Fallback Mock Data
+    const mockPersonalList = [
+      { username: 'edgar.milla', nombre_completo: 'Edgar Milla Pajuelo', cargo: 'Mozo 1' },
+      { username: 'tania.espinoza', nombre_completo: 'Tania Espinoza Shuan', cargo: 'Mozo 2' },
+      { username: 'norma.shuan', nombre_completo: 'Sra. Norma Shuan', cargo: 'Administradora' }
+    ];
 
     // Fallback Mock Data
     const mockProds = [
@@ -186,7 +206,8 @@ const getReporteVentas = async (req, res) => {
       },
       productosVendidos: filteredProds,
       ventasPorMozo: mockMozos,
-      pedidos: mockPeds
+      pedidos: mockPeds,
+      personalList: mockPersonalList
     });
   } catch (error) {
     res.status(500).json({ message: 'Error al generar reporte de ventas.' });

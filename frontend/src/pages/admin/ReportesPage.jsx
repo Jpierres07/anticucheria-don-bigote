@@ -32,6 +32,14 @@ const ReportesPage = () => {
   const mozos = data?.ventasPorMozo || [];
   const pedidos = data?.pedidos || [];
 
+  const personalList = data?.personalList && data.personalList.length > 0 
+    ? data.personalList 
+    : [
+        { username: 'edgar.milla', nombre_completo: 'Edgar Milla Pajuelo', cargo: 'Mozo 1' },
+        { username: 'tania.espinoza', nombre_completo: 'Tania Espinoza Shuan', cargo: 'Mozo 2' },
+        { username: 'norma.shuan', nombre_completo: 'Sra. Norma Shuan', cargo: 'Administradora' }
+      ];
+
   return (
     <div className="space-y-6">
       {/* Controles de Filtros - Ocultos en impresión PDF */}
@@ -100,12 +108,14 @@ const ReportesPage = () => {
               <select
                 value={mozo}
                 onChange={(e) => setMozo(e.target.value)}
-                className="bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none"
+                className="bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-xs text-white focus:border-orange-500 focus:outline-none font-semibold"
               >
                 <option value="todos">👥 Todos los Mozos / Personal</option>
-                <option value="edgar.milla">Edgar Milla Pajuelo (Mozo 1)</option>
-                <option value="tania.espinoza">Tania Espinoza Shuan (Mozo 2)</option>
-                <option value="norma.shuan">Sra. Norma Shuan (Admin / Parrilla)</option>
+                {personalList.map((p, idx) => (
+                  <option key={idx} value={p.username || p.nombre_completo}>
+                    👤 {p.nombre_completo} {p.cargo ? `(${p.cargo})` : ''}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
