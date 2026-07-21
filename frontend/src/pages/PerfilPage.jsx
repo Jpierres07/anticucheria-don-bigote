@@ -10,8 +10,13 @@ const PerfilPage = () => {
   const [activeTab, setActiveTab] = useState('datos'); // 'datos' o 'password'
 
   // Form Datos Personales
-  const [nombre, setNombre] = useState(user?.nombre_completo || '');
-  const [telefono, setTelefono] = useState('');
+  const initialParts = (user?.nombre_completo || '').trim().split(' ');
+  const defaultNombre = initialParts[0] || '';
+  const defaultApellido = initialParts.slice(1).join(' ') || '';
+
+  const [nombre, setNombre] = useState(defaultNombre);
+  const [apellido, setApellido] = useState(defaultApellido);
+  const [telefono, setTelefono] = useState(user?.telefono || '');
   
   // Form Cambiar Contraseña
   const [currentPassword, setCurrentPassword] = useState('');
@@ -30,6 +35,7 @@ const PerfilPage = () => {
     try {
       const res = await api.put('/auth/profile', {
         nombre,
+        apellido,
         telefono
       });
       setMsg(res.data.message || '✅ Datos personales actualizados correctamente.');
@@ -140,18 +146,30 @@ const PerfilPage = () => {
         <div className="glass-panel p-8 space-y-6 border-zinc-800">
           <div className="border-b border-zinc-800 pb-4">
             <h3 className="text-lg font-bold text-white">Editar Datos Personales</h3>
-            <p className="text-xs text-zinc-400">Modifica tus nombres y datos de contacto en la base de datos de la anticuchería</p>
+            <p className="text-xs text-zinc-400">Modifica tus nombres, apellidos y datos de contacto en la base de datos</p>
           </div>
 
           <form onSubmit={handleUpdateDatos} className="space-y-6 max-w-xl">
-            <div>
-              <label className="text-xs font-semibold text-zinc-300 mb-1.5 block">Nombre Completo</label>
-              <Input
-                value={nombre}
-                onChange={(e) => setNombre(e.target.value)}
-                placeholder="Nombre del trabajador o cliente"
-                icon={<User size={18} />}
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="text-xs font-semibold text-zinc-300 mb-1.5 block">Nombres</label>
+                <Input
+                  value={nombre}
+                  onChange={(e) => setNombre(e.target.value)}
+                  placeholder="Ej. Jean-Pierre"
+                  icon={<User size={18} />}
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-semibold text-zinc-300 mb-1.5 block">Apellidos</label>
+                <Input
+                  value={apellido}
+                  onChange={(e) => setApellido(e.target.value)}
+                  placeholder="Ej. Shuan Lliuya"
+                  icon={<User size={18} />}
+                />
+              </div>
             </div>
 
             <div>

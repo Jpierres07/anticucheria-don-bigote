@@ -8,7 +8,12 @@ import { User, Lock, KeyRound, Save, X, Phone, CheckCircle } from 'lucide-react'
 const PerfilModal = ({ isOpen, onClose }) => {
   const { user } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState('datos'); // 'datos' o 'password'
-  const [nombre, setNombre] = useState(user?.nombre_completo || '');
+  const initialParts = (user?.nombre_completo || '').trim().split(' ');
+  const defaultNombre = initialParts[0] || '';
+  const defaultApellido = initialParts.slice(1).join(' ') || '';
+
+  const [nombre, setNombre] = useState(defaultNombre);
+  const [apellido, setApellido] = useState(defaultApellido);
   const [telefono, setTelefono] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -33,6 +38,7 @@ const PerfilModal = ({ isOpen, onClose }) => {
     try {
       const res = await api.put('/auth/profile', {
         nombre,
+        apellido,
         telefono,
         current_password: currentPassword,
         new_password: activeTab === 'password' ? newPassword : ''
@@ -110,14 +116,25 @@ const PerfilModal = ({ isOpen, onClose }) => {
         <form onSubmit={handleSubmit} className="space-y-4">
           {activeTab === 'datos' ? (
             <div className="space-y-3">
-              <div>
-                <label className="text-xs text-zinc-400 mb-1 block">Nombre Completo</label>
-                <Input
-                  value={nombre}
-                  onChange={(e) => setNombre(e.target.value)}
-                  placeholder="Nombre del usuario"
-                  icon={<User size={16} />}
-                />
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <label className="text-xs text-zinc-400 mb-1 block">Nombres</label>
+                  <Input
+                    value={nombre}
+                    onChange={(e) => setNombre(e.target.value)}
+                    placeholder="Nombres"
+                    icon={<User size={16} />}
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-zinc-400 mb-1 block">Apellidos</label>
+                  <Input
+                    value={apellido}
+                    onChange={(e) => setApellido(e.target.value)}
+                    placeholder="Apellidos"
+                    icon={<User size={16} />}
+                  />
+                </div>
               </div>
               <div>
                 <label className="text-xs text-zinc-400 mb-1 block">Teléfono / Celular (Opcional)</label>
