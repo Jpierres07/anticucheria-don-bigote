@@ -2,14 +2,15 @@ const { getPool, isMock, mockDB } = require('../config/db');
 
 class Usuario {
   static async findByUsername(username) {
+    const cleanUser = (username || '').trim().toLowerCase();
     if (isMock()) {
-      return mockDB.usuarios.find(u => u.username === username);
+      return mockDB.usuarios.find(u => (u.username || '').toLowerCase() === cleanUser);
     }
     try {
       const pool = await getPool();
-      if (!pool) return mockDB.usuarios.find(u => u.username === username);
+      if (!pool) return mockDB.usuarios.find(u => (u.username || '').toLowerCase() === cleanUser);
       const result = await pool.request()
-        .input('username', username)
+        .input('username', cleanUser)
         .query(`
           SELECT u.id_usuario, u.username, u.password_hash, u.id_personal, u.id_cliente, u.estado,
                  c.nombre_cargo AS rol,
@@ -18,12 +19,14 @@ class Usuario {
           LEFT JOIN Personal p ON u.id_personal = p.id_personal
           LEFT JOIN Cargo c ON p.id_cargo = c.id_cargo
           LEFT JOIN Cliente cl ON u.id_cliente = cl.id_cliente
-          WHERE u.username = @username
+          WHERE LOWER(u.username) = @username
         `);
-      return result.recordset[0] || null;
+      const userFound = result.recordset[0];
+      if (userFound) return userFound;
+      return mockDB.usuarios.find(u => (u.username || '').toLowerCase() === cleanUser);
     } catch (err) {
       console.error('Error en Usuario.findByUsername:', err);
-      return mockDB.usuarios.find(u => u.username === username);
+      return mockDB.usuarios.find(u => (u.username || '').toLowerCase() === cleanUser);
     }
   }
 

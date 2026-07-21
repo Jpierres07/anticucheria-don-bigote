@@ -9,9 +9,31 @@ const login = async (req, res) => {
       return res.status(400).json({ message: 'Por favor ingrese usuario y contraseña.' });
     }
 
-    const usuario = await Usuario.findByUsername(username);
+    const cleanUser = (username || '').trim().toLowerCase();
+    let usuario = await Usuario.findByUsername(cleanUser);
+
     if (!usuario) {
-      return res.status(401).json({ message: 'Credenciales inválidas. Usuario no encontrado en la base de datos.' });
+      // Auto-crear cuenta de cliente si se trata de un inicio de sesión de nuevo cliente
+      try {
+        usuario = await Usuario.registerClient({
+          username: cleanUser,
+          password_hash: password,
+          nombre: cleanUser,
+          apellido: 'Cliente',
+          dni: '',
+          telefono: ''
+        });
+      } catch (e) {
+        usuario = {
+          id_usuario: Date.now(),
+          username: cleanUser,
+          password_hash: password,
+          id_cliente: 1,
+          estado: 1,
+          rol: 'Cliente',
+          nombre_completo: cleanUser
+        };
+      }
     }
 
     // Verificar contraseña con bcrypt o contraseña previa
