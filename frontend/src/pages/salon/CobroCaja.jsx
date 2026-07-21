@@ -13,6 +13,7 @@ const CobroCaja = () => {
   const [statusMsg, setStatusMsg] = useState('');
   const [processing, setProcessing] = useState(false);
   const [ticketData, setTicketData] = useState(null);
+  const [paidIds, setPaidIds] = useState([]);
 
   useSocket('salon', () => {
     refetch();
@@ -22,12 +23,16 @@ const CobroCaja = () => {
     if (!selectedPedido) return;
     setProcessing(true);
     const targetId = selectedPedido.id_pedido;
-    selectedPedido.id_metodo_pago = metodoPago === 'Efectivo' ? 1 : metodoPago === 'Yape' ? 2 : 3;
+    const metodoSelectedNum = metodoPago === 'Efectivo' ? 1 : metodoPago === 'Yape' ? 2 : 3;
+
+    // Agregar a la lista local de pedidos pagados para desaparecer instantáneamente
+    setPaidIds(prev => [...prev, targetId]);
+
     try {
       await api.post('/salon/cobrar', {
         id_pedido: targetId,
         id_mesa: selectedPedido.id_mesa,
-        id_metodo_pago: selectedPedido.id_metodo_pago
+        id_metodo_pago: metodoSelectedNum
       });
 
       setTicketData({
@@ -55,9 +60,11 @@ const CobroCaja = () => {
   const handleCancelar = async () => {
     if (!selectedPedido) return;
     setProcessing(true);
+    const targetId = selectedPedido.id_pedido;
+    setPaidIds(prev => [...prev, targetId]);
     try {
-      await api.put(`/cocina/pedidos/${selectedPedido.id_pedido}/estado`, { estado_pedido: 'Cancelado' });
-      setStatusMsg(`❌ Pedido #${selectedPedido.id_pedido} anulado correctamente y Mesa ${selectedPedido.id_mesa || ''} liberada.`);
+      await api.put(`/cocina/pedidos/${targetId}/estado`, { estado_pedido: 'Cancelado' });
+      setStatusMsg(`❌ Pedido #${targetId} anulado correctamente y Mesa ${selectedPedido.id_mesa || ''} liberada.`);
       setSelectedPedido(null);
       refetch();
     } catch (e) {
@@ -69,7 +76,7 @@ const CobroCaja = () => {
   };
 
   const todosPedidos = pedidos || [];
-  const pendientes = todosPedidos.filter(p => !p.id_metodo_pago && p.estado_pedido !== 'Pagado' && p.estado_pedido !== 'Cancelado');
+  const pendientes = todosPedidos.filter(p => !paidIds.includes(p.id_pedido) && !p.id_metodo_pago && p.estado_pedido !== 'Pagado' && p.estado_pedido !== 'Cancelado');
 
   if (loading) return <div className="text-center py-12 text-zinc-400">Consultando cuentas activas en caja...</div>;
 
