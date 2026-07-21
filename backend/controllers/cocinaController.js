@@ -3,8 +3,8 @@ const Pedido = require('../models/Pedido');
 const getPedidosCocina = async (req, res) => {
   try {
     const todos = await Pedido.getAll();
-    // Devolver todas las comandas que no han sido canceladas
-    const activos = todos.filter(p => p.estado_pedido !== 'Cancelado');
+    // Excluir comandas entregadas o canceladas de la pantalla de la parrillera
+    const activos = todos.filter(p => p.estado_pedido !== 'Entregado' && p.estado_pedido !== 'Cancelado');
     res.json(activos);
   } catch (error) {
     res.status(500).json({ message: 'Error al consultar comandas de cocina.' });
