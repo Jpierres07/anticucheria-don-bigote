@@ -14,6 +14,22 @@ const Congeladora = () => {
   const [statusMsg, setStatusMsg] = useState('');
   const [saving, setSaving] = useState(false);
 
+  const { data: inventarioData } = useFetch('/admin/inventario');
+
+  const defaultGrilledInsumos = [
+    { id_insumo: 1, nombre_insumo: 'Corazón de Res (Anticuchos)' },
+    { id_insumo: 2, nombre_insumo: 'Rachi / Pancita' },
+    { id_insumo: 3, nombre_insumo: 'Pechuga de Pollo' },
+    { id_insumo: 4, nombre_insumo: 'Bofe de Res' },
+    { id_insumo: 5, nombre_insumo: 'Patitas de Pollo' },
+    { id_insumo: 6, nombre_insumo: 'Alitas de Pollo' },
+    { id_insumo: 7, nombre_insumo: 'Chorizo Parrillero' }
+  ];
+
+  const insumosList = (inventarioData && Array.isArray(inventarioData) && inventarioData.length > 0)
+    ? inventarioData.filter(i => !i.nombre_insumo?.toLowerCase().includes('gas'))
+    : defaultGrilledInsumos;
+
   const handleSaveCierre = async (e) => {
     e.preventDefault();
     setSaving(true);
@@ -60,11 +76,13 @@ const Congeladora = () => {
               <select
                 value={insumoId}
                 onChange={(e) => setInsumoId(parseInt(e.target.value, 10))}
-                className="bg-zinc-900 border border-zinc-700/60 rounded-lg px-4 py-2.5 text-zinc-100 focus:outline-none focus:border-sky-500"
+                className="bg-zinc-900 border border-zinc-700/60 rounded-lg px-4 py-2.5 text-zinc-100 focus:outline-none focus:border-sky-500 font-semibold"
               >
-                <option value={1}>Corazón de Res (Porciones)</option>
-                <option value={2}>Rachi / Pancita (Porciones)</option>
-                <option value={3}>Pechuga de Pollo (Porciones)</option>
+                {insumosList.map((ins) => (
+                  <option key={ins.id_insumo} value={ins.id_insumo}>
+                    🥩 {ins.nombre_insumo} (Porciones)
+                  </option>
+                ))}
               </select>
             </div>
 
