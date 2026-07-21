@@ -53,7 +53,7 @@ const Inventario = () => {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-            <Boxes className="text-orange-500" size={24} /> Logística e Inventario (3FN)
+            <Boxes className="text-orange-500" size={24} /> Logística e Inventario
           </h2>
           <p className="text-xs text-zinc-400">Conversión de Unidades (Compra ➔ Consumo)</p>
         </div>

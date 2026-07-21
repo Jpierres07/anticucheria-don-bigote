@@ -99,7 +99,7 @@ const ReportesPage = () => {
               </h1>
             </div>
             <p className="text-xs text-zinc-400 print:text-gray-600 font-semibold mt-0.5">
-              Sistema de Gestión Integral 3FN - Reporte Oficial de Ventas
+              Sistema de Gestión Integral - Reporte Oficial de Ventas
             </p>
             <p className="text-[11px] text-zinc-500 print:text-gray-500">
               Huaraz, Ancash | Administradora: Sra. Norma Shuan Lliuya

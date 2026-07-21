@@ -227,7 +227,7 @@ const Navbar = () => {
                 onClick={() => setMobileMenuOpen(false)} 
                 className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-zinc-200 hover:bg-orange-500/20 hover:text-orange-400"
               >
-                <Boxes size={16} className="text-orange-400" /> Gestión de Insumos (3FN)
+                <Boxes size={16} className="text-orange-400" /> Gestión de Insumos
               </Link>
               <Link 
                 to="/admin/congeladora" 
