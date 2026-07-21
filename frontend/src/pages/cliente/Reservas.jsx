@@ -86,17 +86,27 @@ const Reservas = () => {
               <span className="text-[11px] text-orange-400 font-medium block mt-1">📅 Reservas desde hoy en adelante</span>
             </div>
 
-            <div>
-              <Input
-                label="Hora Preferida (6:00 PM - 11:00 PM)"
-                type="time"
-                min="18:00"
-                max="23:00"
+            <div className="flex flex-col gap-1.5">
+              <label className="text-sm font-medium text-zinc-300">Hora Preferida (6:00 PM - 11:00 PM)</label>
+              <select
                 value={formData.hora_reserva}
                 onChange={(e) => setFormData({ ...formData, hora_reserva: e.target.value })}
+                className="bg-zinc-900/80 border border-zinc-700/60 rounded-lg px-4 py-2.5 text-zinc-100 focus:outline-none focus:border-orange-500 font-semibold"
                 required
-              />
-              <span className="text-[11px] text-amber-400 font-medium block mt-1">⏰ Horario: 6:00 PM (18:00) a 11:00 PM (23:00)</span>
+              >
+                <option value="18:00">🕕 06:00 PM (18:00 hrs)</option>
+                <option value="18:30">🕕 06:30 PM (18:30 hrs)</option>
+                <option value="19:00">🕖 07:00 PM (19:00 hrs)</option>
+                <option value="19:30">🕖 07:30 PM (19:30 hrs)</option>
+                <option value="20:00">🕗 08:00 PM (20:00 hrs)</option>
+                <option value="20:30">🕗 08:30 PM (20:30 hrs)</option>
+                <option value="21:00">🕘 09:00 PM (21:00 hrs)</option>
+                <option value="21:30">🕘 09:30 PM (21:30 hrs)</option>
+                <option value="22:00">🕙 10:00 PM (22:00 hrs)</option>
+                <option value="22:30">🕙 10:30 PM (22:30 hrs)</option>
+                <option value="23:00">🕚 11:00 PM (23:00 hrs)</option>
+              </select>
+              <span className="text-[11px] text-amber-400 font-medium block mt-1">⏰ Único horario permitido: 6:00 PM a 11:00 PM</span>
             </div>
           </div>
 
